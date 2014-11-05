@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>plugins</artifactId>
+    <packaging>pom</packaging>
+    <name>Opensign Plugins</name>
+    <parent>
+        <groupId>org.openoces</groupId>
+        <version>2.1.14-SNAPSHOT</version>
+        <artifactId>applet</artifactId>
+    </parent>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>opensign</module>
+                <module>jsse</module>
+                <module>attachment</module>
+                <module>capi</module>
+                <module>cdcard</module>
+                <module>oces</module>
+                <module>pkcs12</module>
+                <module>cryptoki</module>
+                <module>pdf</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>exclude-pdf</id>
+            <modules>
+                <module>opensign</module>
+                <module>jsse</module>
+                <module>attachment</module>
+                <module>capi</module>
+                <module>cdcard</module>
+                <module>oces</module>
+                <module>pkcs12</module>
+                <module>cryptoki</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>

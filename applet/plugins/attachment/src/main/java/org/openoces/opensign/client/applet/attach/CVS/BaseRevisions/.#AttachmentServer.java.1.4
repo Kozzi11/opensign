@@ -1,0 +1,227 @@
+/*
+    Copyright 2006 IT Practice A/S
+    Copyright 2006 TDC Totalløsninger A/S
+    Copyright 2006 Jens Bo Friis
+    Copyright 2006 Preben Rosendal Valeur
+    Copyright 2006 Carsten Raskgaard
+    Copyright 2006 Paw F. Kjeldgaard
+
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+*/
+
+/* $Id: AttachmentServer.java,v 1.4 2012/09/27 11:03:45 pakj Exp $ */
+
+package org.openoces.opensign.client.applet.attach;
+
+/**
+ * This class represents a server serving attachments
+ *
+ * @author Preben Rosendal Valeur  <prv@tdc.dk>
+ * @author Carsten Raskgaard  <carsten@raskgaard.dk>
+ * @author Paw F. Kjeldgaard <pakj@danid.dk>
+ * @author Mads Jensen <mjn@trifork.com>
+ * @author Jeppe Burchhardt <Jeppe.Burchhardt@Cryptomathic.com>
+ * @author Ole Friis Østergaard <ofo@trifork.com>
+ */
+
+import org.openoces.opensign.appletsupport.Attachment;
+import org.openoces.opensign.client.applet.OcesAppletUtils;
+import org.openoces.opensign.client.applet.attach.resources.AttachmentResourceManager;
+import org.openoces.opensign.client.applet.dialogs.AbstractDialog;
+import org.openoces.opensign.client.applet.dialogs.DlgConfirm;
+import org.openoces.opensign.client.applet.dialogs.FileDialogStrategy;
+import org.openoces.opensign.client.applet.dialogs.SwingFileDialogStrategy;
+import org.openoces.opensign.utils.Base64;
+import org.openoces.opensign.utils.FileLog;
+import org.openoces.opensign.utils.IOUtils;
+import org.openoces.opensign.xml.nanoxml.NanoXMLParser;
+import org.openoces.opensign.xml.nanoxml.NanoXMLReader;
+import org.openoces.opensign.xml.nanoxml.XMLElement;
+import org.openoces.opensign.xml.nanoxml.XMLException;
+
+import javax.swing.*;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+
+class AttachmentServer {
+    private AbstractDialog parent;
+    private AttachmentImpl[] attachments;
+    private String homeDir;
+
+    AttachmentServer(AbstractDialog dialog, String attachmentParam, String homeDir) {
+        try {
+            this.parent = dialog;
+            this.homeDir = homeDir;
+            byte[] ba = Base64.decode(attachmentParam.getBytes());
+            String attachmentXml = new String(ba, "UTF8");
+
+            NanoXMLParser parser = new NanoXMLParser(true);
+            NanoXMLReader reader = NanoXMLReader.stringReader(attachmentXml);
+            parser.setReader(reader);
+            XMLElement doc = parser.parse();
+
+            List<XMLElement> children = doc.getChildren();
+            attachments = new AttachmentImpl[children.size()];
+            int i = 0;
+            for (Iterator<XMLElement> iterator = children.iterator(); iterator.hasNext(); i++) {
+                XMLElement child = iterator.next();
+                attachments[i] = new AttachmentImpl(child, this);
+            }
+        } catch (XMLException e) {
+            FileLog.error("Could not parse attachment xml", e);
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            FileLog.fatal(e.toString());
+            throw new RuntimeException(e);
+        }
+    }
+
+    Attachment[] getAttachments() {
+        return attachments;
+    }
+
+    // sample mime types:
+    // from http://www.w3schools.com/media/media_mimeref.asp
+    // application/msword       doc
+    // application/pdf          pdf
+    // application/postscript   ps
+    // application/rtf          rtf
+    // image/bmp                bmp
+    // image/gif                gif
+    // image/jpeg               jpg/jpe/jpeg
+    // image/tiff               tif/tiff
+    // text/html                htm/html
+    // text/plain               txt/...
+    //
+
+    /**
+     * Return true if succesfully saved file
+     * AttachmentImpl status is updated with state of checksum comparison
+     */
+    private boolean copyStream(Attachment a, InputStream in, OutputStream out) throws IOException {
+        CheckSummedInputerStream checksummedStream;
+        synchronized (in) {
+            synchronized (out) {
+                try {
+                    checksummedStream = new Sha1ChecksummedInputStream(in, a.getChecksum());
+                } catch (NoSuchAlgorithmException e) {
+                    return false;
+                }
+                byte[] buffer = new byte[64 * 1024];
+                int c;
+                // int offset = 0; // ?? there seems to be a funny char when utf8 which can
+                // be removed by setting offset to 3 - but then other formats doesn't work
+                // so maybe check the first utf8-char where needed?
+                while ((c = checksummedStream.read(buffer, 0, 64 * 1024)) > -1) {
+                    out.write(buffer, 0, c);
+                }
+            }
+        }
+
+        try {
+            if (a.isHasSeen() && !checksummedStream.getCalculatedChecksum().matches(a.getLocalChecksum())) {
+                // the attachment is being modified while the applet is running. We do not allow this.
+                // We throw an exception and do not update the local hash of the attachment
+                FileLog.debug("Checksum has changed between two downloads of the same attachment");
+                throw new Exception();
+            }
+
+            a.setLocalChecksum(checksummedStream.getCalculatedChecksum());
+
+            if (checksummedStream.hasChecksumValid()) {
+                a.setChecksumVerified();
+                return true;
+            } else {
+                FileLog.warn("Invalid checksum");
+                FileLog.debug("Calculated checksum (base64 encoded): " + new String(Base64.encode(checksummedStream.getCalculatedChecksum().getShaValue())));
+                FileLog.debug("Expected checksum (base64 encoded): " + new String(Base64.encode((a.getChecksum()).getShaValue())));
+                return false;
+            }
+        } catch (Exception e) {
+            FileLog.warn("Exception checking checksum " + e.getMessage());
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    String getAttachmentFilePath(String fileName, JComponent actionButton) {
+
+        FileDialogStrategy strategy = new SwingFileDialogStrategy(parent, actionButton);
+        File f = strategy.getSaveFile(homeDir, fileName, AttachmentResourceManager.getString("SAVE_ATTACHMENT"));
+
+        if (f == null) {
+            return null;
+        }
+
+        if (f.exists()) {
+            String message = AttachmentResourceManager.getString("CONFIRM_OVERWRITE_FILE");
+            DlgConfirm dlgConfirm = new DlgConfirm(parent, actionButton, message, message);
+            dlgConfirm.show();
+            if (dlgConfirm.isCancelled()) {
+                return null;
+            }
+        }
+
+        return f.getAbsolutePath();
+    }
+
+    byte[] getContent(Attachment attachment, boolean validate) throws IOException, InvalidContentException {
+        // get the url of the applet
+        String docBase = OcesAppletUtils.getDocBase(parent.getCallBackHandler().getDocumentBase());
+        String realUrlString = docBase + attachment.getPath();
+        InputStream fromServer = null;
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            // put it into a file:
+            URL realUrl = new URL(realUrlString);
+            URLConnection con = realUrl.openConnection();
+            con.connect();
+            fromServer = con.getInputStream();
+            // end do this
+            if (fromServer == null) {
+                throw new IOException("Unable to download attachment from: " + attachment.getPath() + "( full url: " + realUrl + ")");
+            }
+            if (!copyStream(attachment, fromServer, os)) {
+                FileLog.error("Invalid checksum detected. Attachment info: " + attachment.getPath() + "( full url: " + realUrl + ")");
+            }
+            os.flush();
+
+            byte[] content = os.toByteArray();
+            if (validate) {
+                AttachmentValidator validator = AttachmentValidatorManager.getValidator(attachment.getMimeType());
+                if (validator != null) {
+                    validator.validate(content);
+                }
+            }
+
+            return content;
+        } finally {
+            IOUtils.close(os);
+            IOUtils.close(fromServer);
+        }
+    }
+}

@@ -1,0 +1,474 @@
+/*
+    Copyright 2006 IT Practice A/S
+    Copyright 2006 TDC Totalløsninger A/S
+    Copyright 2006 Jens Bo Friis
+    Copyright 2006 Preben Rosendal Valeur
+    Copyright 2006 Carsten Raskgaard
+	Copyright 2006 Paw F. Kjeldgaard
+    Copyright 2011 Daniel Andersen
+    Copyright 2012 Anders M. Hansen
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+*/
+
+/* $Id: AbstractApplet.java,v 1.8 2013/03/05 11:24:17 anmha Exp $ */
+
+package org.openoces.opensign.client.applet;
+
+/**
+ * This class implements the general applet functionality.
+ *
+ * @author Jens Bo Friis  <jbf@it-practice.dk>
+ * @author Carsten Raskgaard  <carsten@raskgaard.dk>
+ * @author Preben Rosendal Valeur  <prv@tdc.dk>
+ * @author Paw F. Kjeldgaard <pfk@tieto.com>
+ * @author Mads Jensen <mjn@trifork.com>
+ * @author Jeppe Burchhardt <Jeppe.Burchhardt@Cryptomathic.com>
+ * @author Ole Friis Østergaard <ofo@trifork.com>
+ * @author Daniel Andersen <daand@nets.eu>
+ * @author Anders M. Hansen <consult@ajstemp.dk>
+ */
+
+import org.openoces.opensign.Copyright;
+import org.openoces.opensign.appletsupport.AppletSupport;
+import org.openoces.opensign.certificate.CertificateHandler;
+import org.openoces.opensign.certificate.filter.*;
+import org.openoces.opensign.certificate.x509.KeyStoreHandler;
+import org.openoces.opensign.client.applet.dialogs.*;
+import org.openoces.opensign.client.applet.interfaces.Plugaware;
+import org.openoces.opensign.client.applet.resources.ResourceManager;
+import org.openoces.opensign.crypto.CryptoSupport;
+import org.openoces.opensign.crypto.OcesSignatureAlgorithm;
+import org.openoces.opensign.crypto.SignatureAlgorithmFactory;
+import org.openoces.opensign.utils.FileLog;
+import org.openoces.opensign.utils.Version;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.util.*;
+import java.util.List;
+
+public abstract class AbstractApplet extends JApplet implements Copyright, CallBackHandler, Plugaware {
+
+    private Properties signProperties;
+    private SignatureAlgorithmFactory signatureAlgorithmFactory;
+
+    protected ParamReader paramReader;
+
+    protected abstract ParamReader createParamReader();
+
+    protected String userHomeDir;
+
+    private JApplet bootApplet;
+
+    private Class screenClass;
+    protected Screen screen;
+
+    private Thread certLoaderThread;
+
+    private List<KeyStoreHandler> keyStores = new ArrayList<KeyStoreHandler>();
+
+    private JavascriptRunner javascriptRunner;
+
+    private ProgressUI progressUI;
+
+    private Component defaultGlassPane;
+
+    protected AbstractApplet(Class screenClass) {
+        this.screenClass = screenClass;
+        this.javascriptRunner = new JavascriptRunner(this);
+        redirectSystemError();
+    }
+
+    /**
+     * @see JApplet#destroy()
+     */
+    public final void destroy() {
+        try {
+            FileLog.debug("Stopping "+certLoaderThread.getName());
+            certLoaderThread.interrupt();
+            certLoaderThread = null;
+            screenClass = null;
+            screen = null;
+            defaultGlassPane = null;
+            progressUI = null;
+            javascriptRunner = null;
+            if (keyStores != null) {
+                for (KeyStoreHandler keystore : keyStores) {
+                    keystore.destroy();
+                    keystore = null;
+                }
+                keyStores.clear();
+                keyStores = null;
+            }
+            ResourceManager.close();
+            super.destroy();
+            System.err.close();
+        } catch (Throwable t) {
+            FileLog.error("unexpected error occured", t);
+        }
+    }
+
+    public abstract String getAppletInfo();
+
+    public final Frame getBrowserFrame() {
+        Container container = bootApplet;
+        while (container.getParent() != null) {
+            container = container.getParent();
+        }
+
+        Frame owner;
+
+        if (container instanceof Frame) {
+            owner = (Frame) container;
+        } else {
+            // We did not find a suitable owner. Make one up.
+            owner = new JFrame();
+        }
+        return owner;
+    }
+
+    public final Properties getSignProperties() {
+        return signProperties;
+    }
+
+    protected final void commonInit() {
+        String locale = paramReader.getParameter("locale");
+        if (locale != null) {
+            boolean validatedLocale;
+
+            String lang = locale.substring(0, locale.indexOf(',')).trim();
+            String country = locale.substring(locale.indexOf(',') + 1, locale.length()).trim();
+
+            if (lang == null || country == null) {
+                validatedLocale = false;
+            } else if (lang.equals("da") && country.equals("DK")) {
+                validatedLocale = true;
+            } else if (lang.equals("en") && country.equals("US")) {
+                validatedLocale = true;
+            } else if (lang.equals("ca") && country.equals("ES")) {
+                validatedLocale = true;
+            } else if (lang.equals("es") && country.equals("ES")) {
+                validatedLocale = true;
+            } else if (lang.equals("nl") && country.equals("NL")) {
+                validatedLocale = true;
+            } else if (lang.equals("no") && country.equals("NO")) {
+                validatedLocale = true;
+            } else if (lang.equals("nn") && country.equals("NO")) {
+                validatedLocale = true;
+            } else if (lang.equals("sv") && country.equals("SE")) {
+                validatedLocale = true;
+            } else {
+                validatedLocale = false;
+            }
+
+            if (validatedLocale) {
+                ResourceManager.setLocale(lang, country);
+            } else {
+                ResourceManager.setLocale("da", "DK");
+            }
+        } else {
+            ResourceManager.setLocale("da", "DK");
+        }
+
+        String ocesHome = getUserHome() + File.separator + ".oces";
+        for (KeyStoreHandler keyStoreHandler : keyStores) {
+            keyStoreHandler.setCallBackHandler(this);
+            keyStoreHandler.setKeyStoreHome(ocesHome);
+            keyStoreHandler.init();
+        }
+
+        String loglevel = paramReader.getParameter("LOG_LEVEL");
+        if (loglevel == null) {
+            FileLog.setVerbose(FileLog.Level.INFO);
+        } else if (loglevel.equalsIgnoreCase("debug")) {
+            FileLog.setVerbose(FileLog.Level.DEBUG);
+        } else if (loglevel.equalsIgnoreCase("info")) {
+            FileLog.setVerbose(FileLog.Level.INFO);
+        } else if (loglevel.equalsIgnoreCase("warn")) {
+            FileLog.setVerbose(FileLog.Level.WARN);
+        } else if (loglevel.equalsIgnoreCase("error")) {
+            FileLog.setVerbose(FileLog.Level.ERROR);
+        } else if (loglevel.equalsIgnoreCase("fatal")) {
+            FileLog.setVerbose(FileLog.Level.FATAL);
+        } else {
+            FileLog.setVerbose(FileLog.Level.INFO);
+        }
+
+        // always output version info no matter what:
+        FileLog.info("log-level set to: " + FileLog.getVerbose());
+
+        FileLog.info(Copyright.name);
+        FileLog.info(Copyright.copyright);
+        FileLog.info(Version.getVersion());
+
+        certLoaderThread = new Thread(new CertificateLoader(this),"CertificateLoaderThread");
+    }
+
+    /*
+     * @param signtext String BASE64, UTF8
+     * @param signproperties String BASE64, UTF8
+     * @param certificateId String BASE64, UTF8
+     * @param cpr String BASE64, UTF8
+     */
+    public void init() {
+        try {
+            super.init();
+
+            this.defaultGlassPane = getRootPane().getGlassPane();
+
+            this.progressUI = new DefaultProgressUI(defaultGlassPane);
+
+            this.paramReader = createParamReader();
+            commonInit();
+            OcesAppletUtils.printInitInformation(this);
+
+            // signproperties is base64 encoded.
+            String signProperties = paramReader.getParameter("signproperties");
+            this.signProperties = new Properties();
+            if (signProperties != null) {
+                StringTokenizer st = new StringTokenizer(signProperties, ",;");
+                while (st.hasMoreTokens()) {
+                    String namevalue = st.nextToken();
+                    String name = namevalue.substring(0, namevalue.indexOf('=')).trim();
+                    String value = namevalue.substring(namevalue.indexOf('=') + 1, namevalue.length()).trim();
+                    this.signProperties.put(name, value);
+                }
+            }
+            String signatureAlgorithm = paramReader.getParameter("opensign.signature.factory");
+
+            if (signatureAlgorithm == null || "".equals(signatureAlgorithm)) {
+                signatureAlgorithmFactory = new OcesSignatureAlgorithm();
+            } else {
+                Class classDefinition = Class.forName(signatureAlgorithm);
+                signatureAlgorithmFactory = (SignatureAlgorithmFactory) classDefinition.newInstance();
+            }
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(Color.white);
+            getContentPane().add(panel);
+
+            initFilters();
+        } catch (Exception e) {
+            FileLog.error("Init error", e);
+        }
+    }
+
+    public JavascriptRunner getJavascriptRunner() {
+        return javascriptRunner;
+    }
+
+    /**
+     * @see JApplet#start()
+     */
+    public void start() {
+        if (!isVisible()) {
+            setVisible(true);
+        }
+        setFocusable(true);
+        requestFocus();
+
+        progressUI.show(this);
+
+        certLoaderThread.start();
+    }
+
+    /**
+     * @see JApplet#stop()
+     */
+    public final void stop() {
+        super.stop();
+        try {
+            if (keyStores != null) {
+                for (KeyStoreHandler keystore : keyStores) {
+                    keystore.stop();
+                }
+            }
+        } catch (Throwable t) {
+            FileLog.error("unexpected error occured", t);
+        }
+    }
+
+    public void setUserHome(String userHomeDir) {
+        this.userHomeDir = userHomeDir;
+    }
+
+    public String getUserHome() {
+        if (userHomeDir == null) {
+            userHomeDir = OS.getUserHome();
+        }
+        return userHomeDir;
+    }
+
+    public void addPlugin(Object plugin) {
+        if (plugin instanceof KeyStoreHandler) {
+            KeyStoreHandler keyStoreHandler = (KeyStoreHandler) plugin;
+            keyStores.add(keyStoreHandler);
+        }
+        if (plugin instanceof CryptoSupport) {
+            CryptoSupport cryptoSupport = (CryptoSupport) plugin;
+            OS.setCryptoSupport(cryptoSupport);
+        }
+        if (plugin instanceof AppletSupport) {
+            OS.setAppletSupport((AppletSupport) plugin);
+        }
+        if (plugin instanceof SignPanelFactory) {
+            SignScreen.setSignPanelFactory((SignPanelFactory) plugin);
+        }
+    }
+
+    public SignatureAlgorithmFactory getSignatureAlgorithmFactory(char[] password) {
+        signatureAlgorithmFactory.setPassword(password);
+        return signatureAlgorithmFactory;
+    }
+
+    public URL getDocumentBase() {
+        return bootApplet.getDocumentBase();
+    }
+
+    public void setBootApplet(JApplet bootApplet) {
+        this.bootApplet = bootApplet;
+    }
+
+    public ParamReader getParamReader() {
+        return paramReader;
+    }
+
+    public KeyStoreHandler[] getKeyStoreHandlers() {
+        return keyStores.toArray(new KeyStoreHandler[keyStores.size()]);
+    }
+
+    private void initFilters() {
+        // check if the filtering should be repeated - this takes some time!
+        if (CertificateFilter.isUsed()) {
+            // maybe we don't have to read & filter the certs again
+            ParamReader paramReader = getParamReader();
+            String refreshcerts = paramReader.getParameter("refreshcerts");
+            if (refreshcerts != null && refreshcerts.equals("no")) {
+                // use the old list
+                return;
+            }
+        }
+        CertificateFilter.reset();
+        // KeyUsage-filter (which is currently a canSign()-filter) is always automatically added as it is a signing applet.
+        CertificateFilter.add(new KeyUsageFilter());
+        // for backwards compatibility we only include company certs if "includecompanycerts" is set to "yes"
+        String includeCompanyCerts = getParameter("includecompanycerts");
+        boolean doIncludeCompanyCerts = (includeCompanyCerts != null && includeCompanyCerts.equals("yes"));
+        if (!doIncludeCompanyCerts) {
+            // we also remove "virksomhedscertifikater" as they are not applicable
+            CertificateFilter.add(DenySubjectDnCertificateFilter.denyCompanyFilter);
+        }
+        try {
+            initFilter("subjectdnfilter", SubjectDnCertificateFilter.class);
+            initFilter("sernofilter", SerialNoCertificateFilter.class);
+            initFilter("issuerdnfilter", IssuerDnCertificateFilter.class);
+        } catch (InstantiationException e) {
+            FileLog.error(e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            FileLog.error(e.getMessage(), e);
+        }
+    }
+
+    private void initFilter(String parameterName, Class filterClass) throws InstantiationException, IllegalAccessException {
+        String filterParameter = "mandatory";
+        if (parameterName != null) {
+            ParamReader paramReader = getParamReader();
+            filterParameter = paramReader.getParameter(parameterName);
+        }
+        if (filterParameter != null && !filterParameter.equals("")) {
+            CertificateFilter f = (CertificateFilter) filterClass.newInstance();
+            f.setParameter(filterParameter);
+            CertificateFilter.add(f);
+        }
+    }
+
+    private final class CertificateLoader implements Runnable {
+        private AbstractApplet applet;
+
+        private CertificateLoader(AbstractApplet applet) {
+            this.applet = applet;
+        }
+
+        public void run() {
+            try {
+                List<CertificateHandler> loadedCertificates = new ArrayList<CertificateHandler>();
+                boolean supportBrowsingForCertificate = false;
+
+                for (KeyStoreHandler keyStoreHandler : keyStores) {
+                    if (keyStoreHandler.isPollingForCertificates()) {
+                        continue;
+                    }
+                    FileLog.info("Loading certificates for " + keyStoreHandler.getName());
+                    keyStoreHandler.refreshKeystore();
+                    FilenameFilter filter = keyStoreHandler.getFilenameFilter();
+                    if (filter != null) {
+                        supportBrowsingForCertificate = true;
+                    }
+                    CertificateHandler[] certificates = keyStoreHandler.getCertificates();
+                    if (certificates != null && certificates.length > 0) {
+                        loadedCertificates.addAll(Arrays.asList(certificates));
+                    }
+                }
+
+                progressUI.hide(getApplet());
+
+                Constructor constructor = screenClass.getConstructor(new Class[]{CallBackHandler.class, List.class, boolean.class});
+                screen = (Screen) constructor.newInstance(applet, loadedCertificates, supportBrowsingForCertificate);
+                screen.show();
+            } catch (Exception e) {
+                FileLog.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    protected JApplet getApplet() {
+        return this;
+    }
+
+    @Override
+    public Component getDefaultGlassPane() {
+        return defaultGlassPane;
+    }
+
+    /**
+     * Redirects System.error to logging system to avoid leaking
+     * out confidential information to client logs.
+     */
+    private void redirectSystemError() {
+        System.setErr(new PrintStream(new OutputStream() {
+            private StringBuffer buffer = new StringBuffer();
+
+            public void write(int arg0) throws IOException {
+                buffer.append((char) arg0);
+                if (arg0 == '\n') {
+                    FileLog.error(buffer.toString());
+                    buffer.delete(0, buffer.length());
+                }
+            }
+        }));
+    }
+}

@@ -1,0 +1,3 @@
+mvn -Dmaven.scm.cvs.java.ssh.passphrase=<password> -Dmaven.scm.provider.cvs.implementation=cvs_native release:<goal>
+
+cvs -z3 -f -d :ext:pakj@openoces.org:/opt/cvs co opensign

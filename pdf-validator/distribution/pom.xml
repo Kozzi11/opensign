@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+	
+    <parent>
+        <groupId>org.openoces</groupId>
+        <version>2.1.14-SNAPSHOT</version>
+        <artifactId>pdf-validator</artifactId>
+    </parent>
+	
+	<groupId>org.openoces</groupId>
+    <artifactId>pdf-validator-distribution</artifactId>
+	<name>PDF Validator Distribution</name>
+	<packaging>pom</packaging>
+
+    <modules>
+        <module>../application</module>
+    </modules>
+
+    <!-- NOTE: These dependency declarations are only required to sort this project to the
+         end of the line in the multimodule build.
+
+         Since we only include the child1 module in our assembly, we only need to ensure this
+         distribution project builds AFTER that one...
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.openoces</groupId>
+            <artifactId>pdf-validator-application</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>pdf-validator</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/main/assembly/bin.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,112 @@
+/*
+	Copyright 2011 Paw F. Kjeldgaard
+	Copyright 2013 Anders M. Hansen
+	
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+    
+    @author Anders M. Hansen <consult@ajstemp.dk>
+*/
+
+/* $Id: BrowseForCertificateActionListener.java,v 1.5 2013/01/30 10:42:37 anmha Exp $ */
+
+package org.openoces.opensign.client.applet.dialogs.listeners;
+
+import org.openoces.opensign.certificate.CertificateHandler;
+import org.openoces.opensign.certificate.x509.KeyStoreHandler;
+import org.openoces.opensign.client.applet.CallBackHandler;
+import org.openoces.opensign.client.applet.CertificateView;
+import org.openoces.opensign.client.applet.dialogs.DlgInformation;
+import org.openoces.opensign.client.applet.dialogs.FileDialogStrategy;
+import org.openoces.opensign.client.applet.dialogs.GuiUtil;
+import org.openoces.opensign.client.applet.dialogs.SwingFileDialogStrategy;
+import org.openoces.opensign.client.applet.resources.ResourceManager;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FilenameFilter;
+
+public class BrowseForCertificateActionListener implements ActionListener {
+    private CallBackHandler callBackHandler;
+    private CertificateView certificateView;
+    private JButton actionButton;
+
+    public BrowseForCertificateActionListener(CallBackHandler callBackHandler, CertificateView certificateView, JButton actionButton) {
+        this.callBackHandler = callBackHandler;
+        this.certificateView = certificateView;
+        this.actionButton = actionButton;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        // "hent"-knappen blev trykket
+        final KeyStoreHandler[] keyStoreHandlers = callBackHandler.getKeyStoreHandlers();
+        FileDialogStrategy dialogStrategy = new SwingFileDialogStrategy(callBackHandler.getContentPane(), actionButton);
+        File certFile = dialogStrategy.getLoadFile(ResourceManager.getString("FIND_CERTIFICATE"), new FilenameFilter() {
+            public boolean accept(File dir, String n) {
+                for (KeyStoreHandler keyStore : keyStoreHandlers) {
+                    FilenameFilter filter = keyStore.getFilenameFilter();
+                    if (filter != null && filter.accept(dir, n)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        if (certFile == null) {
+            GuiUtil.requestFocus(actionButton);
+            return;
+        }
+
+        CertificateHandler cert = null;
+        for (KeyStoreHandler handler : keyStoreHandlers) {
+            cert = handler.getCertificateFromFile(certFile);
+            if (cert != null) {
+                break;
+            }
+        }
+
+        if (cert != null) {
+            // check if it is equal to any of the old ones
+            // in that case: replace the old one as the user may want an overwritten one.
+            certificateView.addCertificate(cert);
+            GuiUtil.requestFocus(actionButton);
+        } else if(fileIsDriver(certFile)) {
+        	//Do nothing - certFile is a Driver.
+        } else {
+            // tell user it didn't work - nobody can read it
+            DlgInformation dlgInformation = new DlgInformation(callBackHandler, actionButton, ResourceManager.getString("DLG_ERROR_HEADER"), ResourceManager.getString("DLG_ERROR_TEXT_GENERAL_LOAD_FROM_FILE_FAILURE"));
+            dlgInformation.show();
+        }
+    }
+    
+    private boolean fileIsDriver(File file) {
+    	if(file != null && file.exists()) {
+    		String nameLower = file.getName().toLowerCase();
+    		return nameLower.endsWith(".dll") || nameLower.endsWith(".so") || nameLower.endsWith(".jnilib") || nameLower.endsWith(".dylib");
+    	}
+    	return false;
+    }
+}

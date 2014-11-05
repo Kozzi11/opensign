@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <!-- Reads request input using UTF-8 encoding -->
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Handles all requests into the application -->
+    <servlet>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                /WEB-INF/spring/appServlet/servlet-context.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Verifier</servlet-name>
+        <servlet-class>org.openoces.opensign.demo.servlets.Verifier</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>XMLDisplay</servlet-name>
+        <servlet-class>org.openoces.opensign.demo.servlets.XMLDisplay</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>DisplayAttachment</servlet-name>
+        <servlet-class>org.openoces.opensign.demo.servlets.DisplayAttachment</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>DisplayPdfSignText</servlet-name>
+        <servlet-class>org.openoces.opensign.demo.servlets.DisplayPdf</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Verifier</servlet-name>
+        <url-pattern>/servlet/Verifier</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>XMLDisplay</servlet-name>
+        <url-pattern>/servlet/XMLDisplay</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DisplayAttachment</servlet-name>
+        <url-pattern>/servlet/DisplayAttachment</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DisplayPdfSignText</servlet-name>
+        <url-pattern>/servlet/DisplayPdfSignText</url-pattern>
+    </servlet-mapping>
+
+</web-app>

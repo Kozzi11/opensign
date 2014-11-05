@@ -1,0 +1,215 @@
+/*
+    Copyright 2006 IT Practice A/S
+    Copyright 2006 TDC Totalløsninger A/S
+    Copyright 2006 Jens Bo Friis
+    Copyright 2006 Preben Rosendal Valeur
+    Copyright 2006 Carsten Raskgaard
+    Copyright 2013 Anders M. Hansen
+
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+*/
+
+/* $Id: Resources_en_US.java,v 1.11 2013/02/08 10:00:49 anmha Exp $ */
+
+package org.openoces.opensign.client.applet.resources;
+
+/**
+ * en,US specific resource class
+ *
+ * @author Jens Bo Friis  <jbf@it-practice.dk>
+ * @author Carsten Raskgaard  <carsten@raskgaard.dk>
+ * @author Preben Rosendal Valeur  <prv@tdc.dk>
+ * @author Paw F. Kjeldgaard <pakj@danid.dk>
+ * @author Anders M. Hansen <consult@ajstemp.dk>
+ */
+
+
+public class Resources_en_US extends AbstractListResourceBundle {
+
+    protected Object[][] getContents() {
+        return deepCopy(contents);
+    }
+
+    private static final Object[][] contents = {
+        {
+        "ABOUT", "About..."}, {
+        "ABOUT_DETAILS", "Logon and digital signature with OCES certificates and PID-CPR support"}, {
+        "ATTACHMENT_LIST", "Attachments..."},{
+        "ATTACHMENT_SAVE", "Save..."},{
+        "ATTACHMENT_VIEW", "View..."},{
+        "BACKUP_KEYFILE", "Backup key file..."}, {
+        "CANCEL", "Cancel"}, {
+        "CANCEL_MODERN", "Cancel"}, {
+        "CANCEL_LOGON_MODERN", "Cancel"}, {
+        "CERT_EMPLOYEE", "employee"}, {
+        "CERT_PERSONAL", "personal"}, {
+        "CERTIFICATE_DETAILS", "Detaily certifikátu..."}, {
+        "CERTIFICATE_EXPIRED", "Expired"}, {
+        "CERTIFICATE_LIST", "Certifikáty"}, {
+        "CONFIRM_ACCEPT_WRONG_CHECKSUM", "Wrong checksum - continue anyway?"},{
+        "CONFIRM_DELETE", "Delete key file?"}, {
+        "CUSTOMERID", "Customer id"}, {
+        "DEFAULT_ERROR_MSG", "An error has occured"}, {
+        "DELETE_KEYFILE", "Delete key file..."}, {
+        "DRIVER_NOT_FOUND", "PKCS11 driver not found"}, {
+        "INSERT_HARDWARETOKEN", "Insert your hardware to read certificates"}, {
+        "HARDWARETOKEN_COULD_NOT_INITIALIZE", "Could not initialize your hardware. Try to restart your browser"}, {
+        "HARDWARETOKEN_CHECKSUM_ERROR_TITLE", "Unknown driver for your hardware"}, {
+        "HARDWARETOKEN_CHECKSUM_ERROR_MESSAGE", "Could not recognize the found driver.\nAre you sure you want to continue?"}, {
+        "POLLER_ADDING_CERTIFICATES", "Adding certificates to list..."}, {
+        "DLG_ABOUT_LGPL_NOTICE", "This is open source software, placed under the terms of the " +
+        "GNU LESSER GENERAL PUBLIC LICENSE.\n" +
+        "Please see: http://www.gnu.org/licenses/lgpl.txt or " +
+        "opensign.license for details.\n" +
+        "Permission to use, copy, modify, and distribute this software\n" +
+        "for any purpose and without fee is hereby granted, provided\n" +
+        "that the above copyright notices appear in all copies and that\n" +
+        "both the copyright notice and this permission notice appear in\n" +
+        "supporting documentation."}, {
+        "DLG_ABOUT_MAJOR_CONTRIBUTORS", "Major contributors:"}, {
+        "DLG_ABOUT_NAME", "OpenSign"}, {
+        "DLG_ABOUT_NAME_DETAILS", "Applet for digital signature and logon"}, {
+        "DLG_CERTIFICATEDETAILS_BUTTON_CLOSE", "Close"}, {
+        "DLG_CERTIFICATEDETAILS_HEADER", "Detaily certifikátu"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_CERTIFICATESTORE", "Source"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_CERTIFICATESTORE_PKCS12", "PKCS12 file"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_CERTIFICATESTORE_CRYPTOKI", "Hardware"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_CERTIFICATESTORE_UNKNOWN", "Unknown"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_DATE_EXPIRY", "Expiry"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_DATE_ISSUANCE", "Issued"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_ISSUERDN", "Issuer"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE", "Key usage"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_CRL_SIGN", "CRL signing"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_DATA_ENCIPHERMENT", "Data encipherment"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_DIGITAL_SIGNATURE", "Digital signature"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_KEY_AGREEMENT", "Key agreement"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_KEY_CERT_SIGN", "Podepisování certifikátu"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_KEY_ENCIPHERMENT", "Key encipherment"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_NON_REPUDIATION", "Content-commitment"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_KEYUSAGE_NOT_AVAILABLE", "not available"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_SERIALNUMBER", "Serial number"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_SUBJECTDN", "Subject"}, {
+        "DLG_CERTIFICATEDETAILS_LABEL_VERSION", "Version"}, {
+        "DLG_CPR_HEADER", "Enter social security number"}, {
+        "DLG_INFO_HEADER", "Info"}, {
+        "DLG_ERROR_HEADER", "Error"}, {
+        "DLG_ERROR_TEXT_INVALID_PASSWORD", "An error occured. The password may be invalid"}, {
+        "DLG_ERROR_TEXT_LOAD_FROM_FILE_FAILURE", "An error occured while loading file. The password may be invalid"}, {
+        "DLG_ERROR_TEXT_GENERAL_LOAD_FROM_FILE_FAILURE", "The file wasn't recognized as a certificate or hardware driver."}, {
+        "DLG_INFO_BUTTON_OK", "OK"}, {
+        "DLG_INFO_HEADER_BETA", "Important note"}, {
+        "DLG_INFO_HEADER_CERTIFICATE_LOADED", "Load of certificate"}, {
+        "DLG_INFO_HEADER_NO_KEYSTORES_AVAILABLE", "No keystores available"}, {
+        "DLG_INFO_TEXT_BETA", "This is a beta version of an OpenOCES applet. It should not be used for anything but testing purposes"}, {
+        "DLG_INFO_TEXT_CERTIFICATE_LOADED", "The certificate can now be used to sign"}, {
+        "DLG_INFO_TEXT_NO_KEYSTORES_AVAILABLE", "Info"}, {
+        "DLG_LOADFILE_HEADER", "Select a certificate from file ..."}, {
+        "DLG_PASSWORD_BUTTON_CANCEL", "Cancel"}, {
+        "DLG_PASSWORD_BUTTON_OK", "OK"}, {
+        "DLG_PASSWORD_HEADER_PREFIX", "Enter password for"}, {
+        "DLG_PASSWORD_HEADER_CRYPTOKI", "hardware"}, {
+        "DLG_PASSWORD_LABEL_CPR", "SSN"}, {
+        "DLG_PASSWORD_LABEL_PASSWORD", "Password"}, {
+        "DLG_PASSWORD_LABEL_PIN", "PIN"}, {
+        "DLG_PINCODE_HEADER", "PIN code for CD card"}, {
+        "ERR_CREATE_KEY_DIR", "Unable to create certificate directory on disk"}, {
+        "ERR_WRONG_CERTIFICATE", "This certificate cannot be used for signing here"}, {
+        "ERR_WRONG_PASSWORD", "Invalid password"}, {
+        "EXPORT","Export..."}, {
+        "FIND_CERTIFICATE", "Find certificate"}, {
+        "FUNCTIONS", "Functions >>"}, {
+        "FUNCTIONS_MODERN", "Locate certificate..."}, {
+        "FUNCTIONS_MODERN_LOGON", "Browse..."}, {
+        "HEADER_SIGNTEXT", "Below is the document to be signed"}, {
+        "IMPORT", "Import..."}, {
+        "KEYSTORE_CDCARD", "Key on CD card"}, {
+        "KEYSTORE_MS", "Internal keystore (CAPI)"}, {
+        "KEYSTORE_PKCS12", "External key files (PKCS12)"}, {
+        "LOADING_CERTIFICATES", "Loading certificates..."}, {
+        "LOGONTO", "Logon to"}, {
+        "LOGON_HOW_TO", "by selecting you certificate and clicking"}, {
+        "LOGON_HOW_TO2", "Select certificate and login at"}, {
+        "NO", "No"}, {
+        "NO_CERTIFICATES", "No certificates"}, {
+        "NO_KEYSTORES", "No keystore types available"}, {
+        "OK", "OK"}, {
+        "OK_SIGN_MODERN", "Sign"}, {
+        "OK_LOGON_MODERN", "Login"}, {
+        "PASSWORD", "Password"}, {
+        "PATH", "Locate certificate..."}, {
+        "PLEASE_WAIT", "Please wait..."}, {
+        "PREFERENCES", "Preferences..."}, {
+        "RESTORE_KEYFILE", "Restore backup"}, {
+        "SEE", "http://it-practice.dk\nhttp://www.portalprotect.dk"}, {
+        "SELECT_KEYSTORE","Select keystore..."}, {
+        "SOCIAL_SECURITY_NUMBER", "Social Security Number"}, {
+        "TITLE_LOGON", "X.509 OCES certificate logon"}, {
+        "TITLE_SIGN", "OpenOCES digital signature"}, {
+        "USERID", "User id"}, {
+        "TITLE_SIGN", "Digital signature"}, {
+        "WINDOW_MAIN_BUTTON_CANCEL", "Cancel"}, {
+        "WINDOW_MAIN_BUTTON_CHOOSE_FROM_FILE", "Select from file ..."}, {
+        "WINDOW_MAIN_BUTTON_DETAILS", "Details ..."}, {
+        "WINDOW_MAIN_BUTTON_SIGN", "Sign"}, {
+        "WINDOW_MAIN_LABEL_CHOOSE_CERTIFICATE", "Select certificate"}, {
+        "YES", "Yes"}, {
+        "generic.wait", "Please wait."}, {
+        "generic.information1", "Your details"
+            }, {
+        "generic.information2", "are being processed..."
+            } , {
+                "DLG_PRINT_CONDITIONS", "Print conditions"
+            } , {"DLG_CERTIFICATEDETAILS_LABEL_CERTIFICATESTORE_OCES", "Oces file"},
+            {"VIEW_PDF_DOCUMENT", "View in full screen"},
+            {"BACK_TO_SIGN", "Back for approval"},
+            {"PRINT_LABEL", "Print"},
+            {"SAVE_LABEL", "Save document"},
+            {"progress.downloading.document", "Loading document ..."},
+            {"progress.downloading.init", "0"},
+            {"progress.decoding.document", "Reading PDF document"},
+            {"progress.validating.document", "Validating PDF document"},
+            {"ZOOM_IN_TOOLTIP", "Zoom in"},
+            {"ZOOM_OUT_TOOLTIP", "Zoom out"},
+            {"PAGE_LABEL", "Page"},
+            {"ADJUST_WINDOW_SIZE_LABEL", "Window"},
+            {"ADJUST_WINDOW_HEIGHT_LABEL", "Height"},
+            {"ADJUST_WINDOW_WIDTH_LABEL", "Width"},
+            {"BACK_TOOLTIP", "Display previous page"},
+            {"FORWARD_TOOLTIP", "Display next page"},
+            {"PRINT_TOOLTIP", "Print document"},
+            {"SAVE_TOOLTIP", "Save the document on your computer"},
+            {"ADJUST_WINDOW_SIZE_TOOLTIP", "Full screen"},
+            {"ADJUST_WINDOW_HEIGHT_TOOLTIP", "Fit height"},
+            {"ADJUST_WINDOW_WIDTH_TOOLTIP", "Fit width"},
+            {"ADJUST_WINDOW_NORMAL_SIZE_TOOLTIP", "Restore window size"},
+            {"ERROR_INVALID_CONTENT", "The document has a bug that makes it can not be displayed. Contact document issuer to have the error corrected"},
+            {"ERROR_UNABLE_TO_DOWNLOAD_FILE", "The document can not be downloaded locally and saved. Contact document issuer to have the error corrected"},
+            {"DLG_PRINT_CONDITIONS", "Print conditions"},
+            {"DLG_CERTIFICATEDETAILS_LABEL_CERTIFICATESTORE_OCES", "Oces file"},
+            {"OK_EXPORT", "Export to PKCS12"},
+            {"EXPORT_HOW_TO", "Select certificate to be exported to PKCS12:"}
+
+
+    };
+}

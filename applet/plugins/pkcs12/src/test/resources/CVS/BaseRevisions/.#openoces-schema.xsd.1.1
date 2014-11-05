@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.openoces.org/2006/07/signature#"
+        xmlns:openoces="http://www.openoces.org/2006/07/signature#"
+        xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+        version="0.1" elementFormDefault="qualified">
+
+    <import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig1-schema.xsd"/>
+
+    <element name="signature" type="openoces:SignatureType"/>
+    <complexType name="SignatureType">
+        <sequence>
+            <element ref="ds:Signature" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+        <attribute name="version" type="string" fixed="0.1"/>
+    </complexType>
+
+    <element name="Name" type="openoces:StringType"/>
+
+
+    <element name="Value" type="openoces:ValueType"/>
+
+    <complexType name="ValueType">
+        <simpleContent>
+            <extension base="string">
+                <attribute name="VisibleToSigner">
+                    <simpleType>
+                        <restriction base="string">
+                            <pattern value="yes|no"/>
+                        </restriction>
+                    </simpleType>
+                </attribute>
+                <attribute name="Encoding" type="string" default="base64" />
+            </extension>
+        </simpleContent>
+    </complexType>
+
+    <simpleType name="StringType">
+        <restriction base="string"/>
+    </simpleType>
+
+</schema>

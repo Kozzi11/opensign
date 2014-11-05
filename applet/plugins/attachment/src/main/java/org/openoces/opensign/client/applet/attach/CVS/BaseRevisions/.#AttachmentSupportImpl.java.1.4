@@ -1,0 +1,111 @@
+/*
+    Copyright 2006 IT Practice A/S
+    Copyright 2006 TDC Totalløsninger A/S
+    Copyright 2006 Jens Bo Friis
+    Copyright 2006 Preben Rosendal Valeur
+    Copyright 2006 Carsten Raskgaard
+    Copyright 2006 Paw F. Kjeldgaard
+
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+
+ * @author Mads Jensen <mjn@trifork.com>
+ * @author Jeppe Burchhardt <Jeppe.Burchhardt@Cryptomathic.com>
+ * @author Ole Friis Østergaard <ofo@trifork.com>
+*/
+
+/* $Id: AttachmentSupportImpl.java,v 1.4 2012/09/27 11:03:45 pakj Exp $ */
+
+package org.openoces.opensign.client.applet.attach;
+
+import org.openoces.opensign.appletsupport.Attachment;
+import org.openoces.opensign.appletsupport.AttachmentSupport;
+import org.openoces.opensign.client.applet.CallBackHandler;
+import org.openoces.opensign.client.applet.attach.resources.AttachmentResourceManager;
+import org.openoces.opensign.client.applet.dialogs.DlgInformation;
+
+import javax.swing.*;
+
+/**
+ * This class implements a facade between the applet and attachment support classes
+ *
+ * @author Preben Rosendal Valeur  <prv@tdc.dk>
+ * @author Carsten Raskgaard  <carsten@raskgaard.dk>
+ * @author Paw F. Kjeldgaard <pakj@danid.dk>
+ */
+
+public class AttachmentSupportImpl implements AttachmentSupport {
+    private AttachmentListViewDialog attachmentListView;
+    private AttachmentServer attachmentServer;
+    private CallBackHandler view;
+
+    public void init(CallBackHandler view, String attachmentParam, String homeDir, JComponent oldFocusComponent) {
+        this.view = view;
+        attachmentListView = new AttachmentListViewDialog(view, oldFocusComponent);
+        attachmentServer = new AttachmentServer(attachmentListView, attachmentParam, homeDir);
+        registerViewers();
+    }
+
+    public void show(CallBackHandler parent) {
+        AttachmentImpl[] attachments = (AttachmentImpl [])attachmentServer.getAttachments();
+        attachmentListView.setAttachments(attachments);
+        attachmentListView.showAttachments();
+    }
+    public Attachment [] getAttachments(){
+        return attachmentServer.getAttachments();
+    }
+
+    public boolean isSigningOK(JComponent oldFocusComponent) {
+        Attachment[] attachments = getAttachments();
+        boolean allMandatorySeen = true;
+        for (Attachment attachment : attachments) {
+            allMandatorySeen &= (attachment.isOptional() || attachment.isHasSeen());
+        }
+
+        if (!allMandatorySeen){
+            String header = AttachmentResourceManager.getString("NOT_ALL_MANDATORY_ATTACHMENTS_DOWNLOADED_HEADER");
+            String msg = AttachmentResourceManager.getString("NOT_ALL_MANDATORY_ATTACHMENTS_DOWNLOADED_HEADER");
+            DlgInformation dlgInfo = new DlgInformation(view, oldFocusComponent, header, msg);
+            dlgInfo.show();
+            return false;
+        }
+        return true;
+    }
+
+    // we just register some viewers here to get going
+    private void registerViewers() {
+        if (PlainTextViewer.isSupported()) {
+            AttachmentViewerManager.registerViewer("text/plain",
+                    new PlainTextViewer());
+        }
+        if (GifViewer.isSupported()) {
+            AttachmentViewerManager.registerViewer("image/gif", new GifViewer());
+        }
+        if (HtmlViewer.isSupported()) {
+            AttachmentViewerManager.registerViewer("text/html", new HtmlViewer());
+        }
+        if (RtfViewer.isSupported()) {
+            AttachmentViewerManager.registerViewer("text/rtf", new RtfViewer());
+        }
+    }
+}

@@ -1,0 +1,485 @@
+<html>
+
+<head>
+</head>
+
+<body bgcolor="white">
+
+<h2>Customize input to the OpenSign applet</h2>
+
+<form name="form" method="post" action="/demo/servlet/AppletLauncher">
+
+<input type="hidden" name="appletname" value="Sign">
+
+<table>
+<tr>
+    <td>Sign text format:
+        <select name="signtext_format" size="1">
+            <option value="PLAIN">PLAIN</option>
+            <option value="HTML">HTML</option>
+            <option value="XML">XML</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td colspan="2">
+        <textarea name="xslt" cols="80" rows="10">Enter XSLT (if XML text format)</textarea>
+    </td>
+</tr>
+<tr>
+    <td>Transformation id (if XML text format):   <input type="text" name="xslt_id" value="">
+    </td>
+</tr>
+
+<tr>
+    <td colspan="2">
+        <textarea name="text" cols="80" rows="10">Enter text to be signed here</textarea>
+    </td>
+</tr>
+<tr>
+    <td><input type="radio" name="inputtextas" value="plaintext" checked>text<input type="radio" name="inputtextas"
+                                                                                    value="xmltext">xml
+    </td>
+</tr>
+<tr>
+    <td colspan="2">
+        <textarea name="xmltext" cols="80" rows="10"><?xml version="1.0" encoding="utf-8" ?>
+            <virk:SignInputStructure xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                     xmlns:virk="http://rep.oio.dk/virk.dk/xml/schemas/2002/06/28/"
+                                     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                                     xsi:schemaLocation="http://rep.oio.dk/virk.dk/xml/schemas/2002/06/28/  VIRK_SignInputStructure.xsd">
+                <virk:SignInputHeaderStructure xmlns:virk="http://rep.oio.dk/virk.dk/xml/schemas/2002/06/28/">
+                    <virk:SignLayoutStructure>
+                        <virk:SignAppletBackgroundColor>0xFFFFFF</virk:SignAppletBackgroundColor> <!-- 0xRRGGBB -->
+                        <virk:SignAppletSignDataSectionVisibleIndicator>
+                            true</virk:SignAppletSignDataSectionVisibleIndicator>
+                        <!-- show or hide the SignData section -->
+                        <virk:SignAppletSignDataText font="verdana" fontSize="12"
+                                                     fontColor="0x000000"></virk:SignAppletSignDataText>
+                        <!-- style for content in SignData area -->
+                        <virk:SignAppletSignDataBackgroundColor>0xFFFFFF</virk:SignAppletSignDataBackgroundColor>
+                        <!-- 0xRRGGBB -->
+                        <virk:SignHeaderText font="verdana" fontSize="20" fontColor="0x000000">Underskriv
+                            Digitalt</virk:SignHeaderText>
+                        <!-- default: "Digital Signature" -->
+                        <virk:SignTopSectionText font="verdana" fontSize="" fontColor="0x000000">Nedenfor ser du det/de
+                            dokument/er du skal underskrive</virk:SignTopSectionText>
+                        <!-- default: "Review Content" --><virk:SignMidSectionText font="verdana" fontSize=""
+                                                                                   fontColor="0x000000"></virk:SignMidSectionText>
+                        <!-- default: "Select certificate and press the Sign button" -->
+                        <virk:SignCertificateSelectText font="verdana" fontSize="" fontColor="0x000000">
+                            Certifikat:</virk:SignCertificateSelectText>
+                        <!-- default: "Select certificate" -->
+                        <virk:SignNoCertificateFoundText font="verdana" fontSize="" fontColor="0x000000">Ingen gyldige
+                            certifikater fundet</virk:SignNoCertificateFoundText>
+                        <!-- default: "No valid certificates found" -->
+                        <virk:SignCertificateNotValidText font="verdana" fontSize="" fontColor="0x000000">Certifikatet
+                            er ugyldigt eller opfylder ikke kravene til denne
+                            signering</virk:SignCertificateNotValidText>
+                        <!-- default: "Certificate not valid or does not meet criteria for this signing operation" -->
+                        <virk:SignButtonBackgroundColor>0x003470</virk:SignButtonBackgroundColor>
+                        <!-- 0x1F405E 0xRRGGBB -->
+                        <virk:SignOKButtonText font="verdana" fontSize="12" fontColor="0xFFFFFF" fontWeight="bold">
+                            Underskriv</virk:SignOKButtonText>
+                        <!-- default: "Sign" --><virk:SignCancelButtonText font="verdana" fontSize=""
+                                                                           fontColor="0xFFFFFF">
+                        Fortryd</virk:SignCancelButtonText>
+                        <!-- default: "Cancel" -->
+                        <virk:SignCancelButtonEnabledIndicator>true</virk:SignCancelButtonEnabledIndicator>
+                        <virk:SignExternalCertificateButtonText font="verdana" fontSize="" fontColor="0xFFFFFF">Find
+                            Certifikat</virk:SignExternalCertificateButtonText>
+                        <!-- default: "Load Certificate" --><virk:SignCertificateSelectStringFormatPrimary>
+                        CertificateX509.Subject.CN</virk:SignCertificateSelectStringFormatPrimary>
+                        <!-- default: "CertificateX509.Subject.CN" First part of string in certificate select dropdown box -->
+                        <virk:SignCertificateSelectStringFormatSecondary>
+                            CertificateX509.Subject.SerialNumber</virk:SignCertificateSelectStringFormatSecondary>
+                        <!-- default: "CertificateX509.Subject.SerialNumber" Second part of string in certificate select dropdown box in ()-->
+                        <virk:SignInternalErrorText font="verdana" fontSize="" fontColor="0xFF0000">Intern
+                            fejl</virk:SignInternalErrorText>
+                        <!-- default: "Internal Error" maybe followed by some errormessage -->
+                        <virk:SignAttachmentSectionStructure>
+                            <virk:SignAttachmentSectionVisibleIndicator>
+                                true</virk:SignAttachmentSectionVisibleIndicator>
+                            <virk:SignAttachmentSectionText font="verdana" fontSize="12" fontColor="0x000000">
+                                Bilag</virk:SignAttachmentSectionText>
+                            <!-- default: "Attachments" -->
+                            <virk:SignAttachmentTableDefinition headerFont="verdana" headerFontSize="12"
+                                                                headerFontColor="0x000000"
+                                                                headerBackgroundColor="0xFFFFFF"
+                                                                dataFont="verdana" dataFontSize="10"
+                                                                dataFontColor="0x000000" dataBackgroundColor="0xFFFFFF">
+                                <virk:SignAttachmentColumnStructure colWidth="">
+                                    <virk:SignAttachmentColumnCode>text</virk:SignAttachmentColumnCode>
+                                    <virk:SignAttachmentHeaderText>Filer der er
+                                        vedh�ftet</virk:SignAttachmentHeaderText>
+                                    <virk:SignAttachmentColumnDataReference>
+                                        fileName</virk:SignAttachmentColumnDataReference>
+                                    <virk:SignAttachmentColumnLink>fileReference</virk:SignAttachmentColumnLink>
+                                </virk:SignAttachmentColumnStructure>
+                            </virk:SignAttachmentTableDefinition>
+                        </virk:SignAttachmentSectionStructure>
+                    </virk:SignLayoutStructure>
+                    <virk:SignControlStructure>
+                        <virk:SignCertificateControlStructure>
+                            <!-- default: No rules -->
+                            <virk:SignCertificateValidationStructure>
+                                <virk:RuleSetStructure>
+                                    <virk:RuleSetOR>
+                                        <virk:RuleSetAND>
+                                        </virk:RuleSetAND>
+                                    </virk:RuleSetOR>
+                                </virk:RuleSetStructure>
+                            </virk:SignCertificateValidationStructure>
+                            <virk:SignCertificateValidationEnabledIndicator>
+                                false</virk:SignCertificateValidationEnabledIndicator>
+                            <virk:SignExternalCertificateEnabledIndicator>
+                                true</virk:SignExternalCertificateEnabledIndicator>
+                            <virk:SignDefaultCertificate>
+                                <ds:X509Data>
+                                    <ds:SubjectName>Test</ds:SubjectName>
+                                </ds:X509Data>
+                            </virk:SignDefaultCertificate>
+                        </virk:SignCertificateControlStructure>
+                        <virk:SignTextAttachmentsVisibleIndicator>false</virk:SignTextAttachmentsVisibleIndicator>
+                        <virk:SignOioAttachmentsVisibleIndicator>true</virk:SignOioAttachmentsVisibleIndicator>
+                    </virk:SignControlStructure>
+                </virk:SignInputHeaderStructure>
+                <virk:DataContainer>
+                    <virk:DataObjectCollection>
+                        <virk:DataObject Id="041c78ba-e351-40d8-87bc-beb3fe42bfac" dataEncoding="base64"
+                                         textEncoding="utf-8"
+                                         fileName="afterburner.xml" fileSize="" mimeType="text/xml"
+                                         fileContentType="OIOXML" fileProcessControl=""
+                                         fileDescription="">
+                            PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjx0b2xkc2thdDpGb3JtIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTpzY2hlbWFMb2NhdGlvbj0iaHR0cDovL3JlcC5vaW8uZGsvdG9sZHNrYXQuZGsveG1sL3NjaGVtYXMvMjAwMi8wNi8yOC8gLi4vVE9MRFNLQVQvVE9MRFNLQVRfSWRfMTQ4MS54c2QiIHhtbG5zOnRvbGRza2F0PSJodHRwOi8vcmVwLm9pby5kay90b2xkc2thdC5kay94bWwvc2NoZW1hcy8yMDAyLzA2LzI4LyIgeG1sbnM6eGtvbT0iaHR0cDovL3JlcC5vaW8uZGsveGtvbS5kay94bWwvc2NoZW1hcy8yMDAyLzA2LzI4LyIgeG1sbnM6dmlyaz0iaHR0cDovL3JlcC5vaW8uZGsvdmlyay5kay94bWwvc2NoZW1hcy8yMDAyLzA2LzI4LyIgeG1sbnM6YmJyPSJodHRwOi8vcmVwLm9pby5kay9iYnIuZGsveG1sL3NjaGVtYXMvMjAwMi8wNi8yOC8iIHhtbG5zOmN2cj0iaHR0cDovL3JlcC5vaW8uZGsvY3ZyLmRrL3htbC9zY2hlbWFzLzIwMDIvMDYvMjgvIiB4bWxuczpjcHI9Imh0dHA6Ly9yZXAub2lvLmRrL2Nwci5kay94bWwvc2NoZW1hcy9jb3JlLzIwMDIvMDYvMjgvIj4NCiAgPHZpcms6Rm9ybUhlYWQ+DQogICAgPHZpcms6Rm9ybUlkZW50aWZpZXI+MTQ4MTwvdmlyazpGb3JtSWRlbnRpZmllcj4NCiAgICA8dmlyazpGb3JtVGltZVN0YW1wPjIwMDQtMDgtMjdUMTA6MDA6MDEuNDk1NzUwMCswMjowMDwvdmlyazpGb3JtVGltZVN0YW1wPg0KICAgIDx2aXJrOkZvcm1WZXJzaW9uPjEuMDwvdmlyazpGb3JtVmVyc2lvbj4NCiAgICA8dmlyazpGb3JtTmFtZXNwYWNlPnRvbGRza2F0PC92aXJrOkZvcm1OYW1lc3BhY2U+DQogICAgPHZpcms6Rm9ybVNjaGVtYVVSST5odHRwOi8vcmVwLm9pby5kay90b2xkc2thdC5kay94bWwvc2NoZW1hcy8yMDAyLzA2LzI4LzwvdmlyazpGb3JtU2NoZW1hVVJJPg0KICAgIDx2aXJrOkZvcm1YRlRpZGVudGlmaWVyPg0KICAgIDwvdmlyazpGb3JtWEZUaWRlbnRpZmllcj4NCiAgPC92aXJrOkZvcm1IZWFkPg0KICA8dG9sZHNrYXQ6Rm9ybUJvZHk+DQogICAgPHRvbGRza2F0OkZvcm1fSWRfMTQ4MT4NCiAgICAgIDx0b2xkc2thdDpTdXBwbGVtZW50YXJ5U3RhdGVtZW50RGF0ZSB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgPHRvbGRza2F0OkVudW1iZXJJZGVudGlmaWVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8eGtvbTpNdW5pY2lwYWxpdHlDb2RlIHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6QXBwbGljYXRpb25EYXRlIHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6TWVudUNvZGUgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx2aXJrOlN0YW5kYXJkQ29tcGFueURhdGFHcm91cD4NCiAgICAgICAgPHZpcms6Q29tcGFueU5hbWUgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgPHZpcms6QWRkcmVzc0dyb3VwPg0KICAgICAgICAgIDx4a29tOlJvYWROYW1lIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgICAgPGJicjpIb3VzZU51bWJlck51bWVyaWMgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgICA8YmJyOkhvdXNlTnVtYmVyQ2hhcmFjdGVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgICAgPHhrb206QnVpbGRpbmdOdW1iZXIgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgICA8eGtvbTpGbG9vciB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICAgIDx4a29tOkRvb3IgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgICA8eGtvbTpWaWxsYWdlTmFtZSB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICAgIDx2aXJrOlBPQm94SWRlbnRpZmllciB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICAgIDx4a29tOlBvc3RhbENvZGUgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgICA8eGtvbTpQb3N0YWxEaXN0cmljdE5hbWUgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgPC92aXJrOkFkZHJlc3NHcm91cD4NCiAgICAgICAgPHZpcms6Q29udGFjdEluZm9Hcm91cD4NCiAgICAgICAgICA8eGtvbTpUZWxlcGhvbmVOdW1iZXIgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgICA8dmlyazpQcml2YXRlVGVsZXBob25lTnVtYmVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgICAgPHZpcms6TW9iaWxlTnVtYmVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgICAgPHZpcms6RmF4TnVtYmVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgICAgPHhrb206RW1haWxBZGRyZXNzIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgICAgPHZpcms6V2ViQWRkcmVzcyB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICA8L3Zpcms6Q29udGFjdEluZm9Hcm91cD4NCiAgICAgICAgPGN2cjpDVlJudW1iZXI+MjUzNjk1ODA8L2N2cjpDVlJudW1iZXI+DQogICAgICAgIDx2aXJrOlBOdW1iZXJJZGVudGlmaWVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgIDx2aXJrOk93bmVyc2hpcFR5cGVDb2RlIHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8L3Zpcms6U3RhbmRhcmRDb21wYW55RGF0YUdyb3VwPg0KICAgICAgPHZpcms6SW50ZXJuYWxGb3JtSWQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDxjcHI6Q2l2aWxSZWdpc3RyYXRpb25OdW1iZXIgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpQbGNOdW1iZXJJZGVudGlmaWVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6UGVyaW9kRGF0YUdyb3VwPg0KICAgICAgICA8dmlyazpTdGFydERhdGUgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgPHZpcms6U3RhcnRUaW1lIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgIDx2aXJrOkVuZERhdGUgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgPHZpcms6RW5kVGltZSB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgPC90b2xkc2thdDpQZXJpb2REYXRhR3JvdXA+DQogICAgICA8dG9sZHNrYXQ6VkFUcmVjZWl2YWJsZUFtb3VudCB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgPHRvbGRza2F0OkFydGljbGVWQVRhbW91bnQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpWQVRUb3RhbCB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgPHRvbGRza2F0OlZBVHBheWFibGVBbW91bnQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpPaWxBbmRCb3R0bGVkR2FzRHV0eUFtb3VudCB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgPHRvbGRza2F0OkVsZWN0cmljaXR5VGF4QW1vdW50IHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6TmF0dXJhbEdhc0FuZFRvd25HYXNEdXR5QW1vdW50IHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6Q2FyYm9uRHV0eUFtb250IHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6Q2FyYm9uRGlveGlkZVRheEFtb3VudCB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgPHRvbGRza2F0OldhdGVyQ2hhcmdlQW1vdW50IHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6RGVkdWN0aW9uVG90YWxBbW91bnQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpUYXhMaWFiaWxpdHlBbW91bnQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpFVWFjcXVpc2l0aW9uTm9uVkFUYW1vdW50IHhzaTpuaWw9InRydWUiIC8+DQogICAgICA8dG9sZHNrYXQ6RVVzdXBwbHlOb25WQVRhbW91bnQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpUaGlyZENvdW50cnlTdXBwbHlOb25WQVRhbW91bnQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx0b2xkc2thdDpFeHBsYW5hdGlvblRleHQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgIDx2aXJrOlN0YW5kYXJkRm9ybUVuZERhdGFHcm91cD4NCiAgICAgICAgPHZpcms6UmVtYXJrc1RleHQgeHNpOm5pbD0idHJ1ZSIgLz4NCiAgICAgICAgPHZpcms6Q29udGFjdFBlcnNvbk5hbWVHcm91cD4NCiAgICAgICAgICA8Y3ByOkZpcnN0TmFtZSB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICAgIDxjcHI6TWlkZGxlTmFtZSB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICAgIDxjcHI6U3VyTmFtZSB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICA8L3Zpcms6Q29udGFjdFBlcnNvbk5hbWVHcm91cD4NCiAgICAgICAgPHhrb206VGVsZXBob25lTnVtYmVyIHhzaTpuaWw9InRydWUiIC8+DQogICAgICAgIDx4a29tOkVtYWlsQWRkcmVzcyB4c2k6bmlsPSJ0cnVlIiAvPg0KICAgICAgICA8eGtvbTpEYXRlPjIwMDQtMDgtMjc8L3hrb206RGF0ZT4NCiAgICAgICAgPHhrb206VGltZT45OjU5OjU1IEFNPC94a29tOlRpbWU+DQogICAgICA8L3Zpcms6U3RhbmRhcmRGb3JtRW5kRGF0YUdyb3VwPg0KICAgIDwvdG9sZHNrYXQ6Rm9ybV9JZF8xNDgxPg0KICA8L3RvbGRza2F0OkZvcm1Cb2R5Pg0KPC90b2xkc2thdDpGb3JtPg==</virk:DataObject>
+                        <virk:DataObject Id="ca2c8970-46a2-410b-b209-1ae99fa5153b" dataEncoding="base64"
+                                         textEncoding="utf-8"
+                                         fileName="signdata.txt" fileSize="" mimeType="text/plain"
+                                         fileContentType="SignText" fileProcessControl=""
+                                         fileDescription="">
+                            77u/KysrKysrKw0KRWZ0ZXJhbmdpdmVsc2UgLSBGZWpsIGkgbW9tc2FmcmVnbmluZ2VuDQo9PT09PT09PQ0KKysrKysrKw0KVmlya3NvbWhlZA0KPT09PT09PT0NCiAgQ1ZSLW5yLiAgICAgICAgICAgICA6IDI1MzY5NTgwDQorKysrKysrDQpEZXIgYW5naXZlcyBrdW4gZGlmZmVyZW5jZXIgaSBmb3Job2xkIHRpbCB0aWRsaWdlcmUgYW5naXZuZSBiZWzDuGIuIEZvciBtZWdldCBhbmdpdm5lIGJlbMO4YiBhbmdpdmVzIG1lZCDDtyBzb20gZm9ydGVnbg0KPT09PT09PT0NCisrKysrKysNCkZyYWRyYWcNCj09PT09PT09DQorKysrKysrDQpGZWpsDQo9PT09PT09PQ0KKysrKysrKw0KPQ0KPT09PT09PT0NCisrKysrKysNClN1cHBsZXJlbmRlIG9wbHlzbmluZ2VyDQo9PT09PT09PQ0KKysrKysrKw0KS29udGFrdHBlcnNvbg0KPT09PT09PT0NCiAgRGFncyBkYXRvICAgICAgICAgICA6IDIwMDQtMDgtMjcNCiAgVGlkICAgICAgICAgICAgICAgICA6IDA5OjU5OjU1DQo=</virk:DataObject>
+                    </virk:DataObjectCollection>
+                </virk:DataContainer>
+            </virk:SignInputStructure></textarea>
+    </td>
+</tr>
+<tr>
+<td>
+<table>
+<tr>
+    <td>Applet version:</td>
+    <td align="right">
+        <select name="applet_version" size="1">
+            <option value="v1.0.2">v1.0.2</option>
+            <option value="v1.1.0">v1.1.0</option>
+            <option value="v1.2.0">v1.2.0</option>
+            <option value="v1.2.1">v1.2.1</option>
+            <option value="v1.2.2">v1.2.2</option>
+            <option value="v1.3.0">v1.3.0</option>
+            <option value="v1.3.1">v1.3.1</option>
+            <option value="v1.3.2">v1.3.2</option>
+            <option value="v1.3.3">v1.3.3</option>
+            <option value="v1.4.0">v1.4.0</option>
+            <option value="v1.4.1">v1.4.1</option>
+            <option value="v1.5.0">v1.5.0</option>
+            <option value="v1.5.1">v1.5.1</option>
+            <option value="v1.5.2">v1.5.2</option>
+            <option value="v1.6.0">v1.6.0</option>
+            <option value="v1.6.1">v1.6.1</option>
+            <option value="v1.6.2">v1.6.2</option>
+            <option value="v1.6.3">v1.6.3</option>
+            <option value="v1.6.4">v1.6.4</option>
+            <option value="v1.6.5">v1.6.5</option>
+            <option value="v1.6.6">v1.6.6</option>
+            <option value="v1.6.7">v1.6.7</option>
+            <option selected value="v1.6.9">latest stable version</option>
+            <option value="unstable">latest unstable version</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Applet width:</td>
+    <td align="right">
+        <select name="applet_width" size="1">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="400">400</option>
+            <option value="500">500</option>
+            <option selected value="600">600</option>
+            <option value="700">700</option>
+            <option value="800">800</option>
+            <option value="900">900</option>
+            <option value="1000">1000</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Applet height:</td>
+    <td align="right">
+        <select name="applet_height" size="1">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option selected value="400">400</option>
+            <option value="500">500</option>
+            <option value="600">600</option>
+            <option value="700">700</option>
+            <option value="800">800</option>
+            <option value="900">900</option>
+            <option value="1000">1000</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Signtext font:</td>
+    <td align="right">
+        <select name="signtextfontname" size="1">
+            <option value="">default</option>
+            <option value="Courier">Courier</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Signtext font size:</td>
+    <td align="right">
+        <select name="signtextfontsize" size="1">
+            <option value="">default</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+            <option value="24">24</option>
+            <option value="26">26</option>
+            <option value="28">28</option>
+            <option value="30">30</option>
+            <option value="32">32</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Signtext textarea columns:</td>
+    <td align="right">
+        <select name="signtextcols" size="1">
+            <option value="">default</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+            <option value="60">60</option>
+            <option value="70">70</option>
+            <option value="80">80</option>
+            <option value="90">90</option>
+            <option value="100">100</option>
+            <option value="110">110</option>
+            <option value="120">120</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Signtext textarea rows:</td>
+    <td align="right">
+        <select name="signtextrows" size="1">
+            <option value="">default</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="35">35</option>
+            <option value="40">40</option>
+            <option value="45">45</option>
+            <option value="50">50</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Background color (format: R,G,B in the interval 0-255):</td>
+    <td align="right">
+        <input type="text" name="background" value="255,255,255">
+    </td>
+
+</tr>
+<tr>
+    <td>Applet locale:</td>
+    <td align="right">
+        <select name="locale" size="1">
+            <option value="en,US">English, US</option>
+            <option value="da,DK">Danish, Denmark</option>
+            <option value="ca,ES">Catalan, Spain</option>
+            <option value="es,ES">Spanish, Spain</option>
+            <option value="nl,NL">Dutch, Netherlands</option>
+            <option value="no,NO">Norwegian, Norway</option>
+            <option value="nn,NO">Norwegian (Nynorsk), Norway</option>
+            <option value="sv,SE">Swedish, Sweden</option>
+            </select>
+    </td>
+</tr>
+<tr>
+    <td>Display social security number field:</td>
+    <td align="right">
+        <select name="socialsecuritynumber" size="1">
+            <option value="yes">Yes</option>
+            <option selected value="no">No</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Display optional id field:</td>
+    <td align="right">
+        <select name="optionalid" size="1">
+            <option value="no">No</option>
+            <option value="CUSTOMERID">Yes - customer id</option>
+            <option value="USERID">Yes - user id</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Log verbosity:</td>
+    <td align="right">
+        <select name="loglevel" size="1">
+            <option value="debug">Full</option>
+            <option value="info">Much</option>
+            <option value="warn">Normal</option>
+            <option value="error">Less</option>
+            <option value="fatal">Least</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Certificate subject dn filter</td>
+    <td align="right">
+        <input type="text" name="subjectdnfilter" value="">
+    </td>
+</tr>
+<tr>
+    <td>Certificate issuer dn filter</td>
+    <td align="right">
+        <input type="text" name="issuerdnfilter" value="">
+    </td>
+</tr>
+<tr>
+    <td>Certificate serial number filter</td>
+    <td align="right">
+        <input type="text" name="sernofilter" value="">
+    </td>
+</tr>
+<tr>
+    <td>Logon service (for cd card)</td>
+    <td align="right">
+        <input type="text" name="cdkortservice" value="demo">
+    </td>
+
+</tr>
+<tr>
+    <td>Sign properties</td>
+    <td align="right">
+        <input type="text" name="signproperties" value="challenge=mychallenge">
+    </td>
+
+</tr>
+<tr>
+    <td>CertListWidth in chars)</td>
+    <td align="right">
+        <input type="text" name="certlistwidth" value="">
+    </td>
+
+</tr>
+<tr>
+    <td>Use live-connect:</td>
+    <td align="right">
+        <select name="liveconnect" size="1">
+            <option value="yes">Yes</option>
+            <option selected value="no">No</option>
+        </select>
+    </td>
+</tr>
+<hr/>
+<tr>
+    <td>GUI layout:</td>
+    <td align="right">
+        <select name="gui" size="1">
+            <option value="classic">classic</option>
+            <option selected value="modern">modern</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Plugins: (if Bootstrapped)(depending on VM)</td>
+    <td align="right">
+        capi<input type="checkbox" checked name="capi"><br>
+        pkcs12<input type="checkbox" checked name="pkcs12"><br>
+        cdcard<input type="checkbox" checked name="cdcard"><br>
+        OCES .html keystore<input type="checkbox" checked name="oces"><br>
+        Cryptoki<input type="checkbox" name="cryptoki"><br>
+        attachment<input type="checkbox" checked name="attachment">
+    </td>
+    <td>The Attachment plugin requires OpenSign >= v1.5.0</td>
+</tr>
+<tr>
+    <td>Inputstyle</td>
+    <td align="right">
+        <select name="inputstyle" size="1">
+            <option value="default">default</option>
+            <option value="virk">virk-specific</option>
+            <option value="ver_1.0">OpenSign xmldsig v1.0</option>
+            <option selected value="not-specified">not specified</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td>Allow Microsoft Windows registry access</td>
+    <td align="right">
+        <select name="allowregistryaccess" size="1">
+            <option selected value="yes">yes</option>
+            <option value="no">no</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td>sort certificates in GUI</td>
+    <td align="right">
+        <select name="sortcertificates" size="1">
+            <option value="yes">yes</option>
+            <option selected  value="no">no</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Signature and Digest Method</td>
+    <td align="right">
+        <select name="signatureAlgorithm" size="1">
+            <option value="org.openoces.opensign.crypto.DefaultSignatureAlgorithm">Default</option>
+            <option value="org.openoces.opensign.crypto.OcesSignatureAlgorithm">Oces</option>
+            <option selected  value="undefined">Undefined</option>
+        </select>
+    </td>
+</tr>
+
+</table>
+</td>
+</tr>
+
+<tr>
+    <td align="right">
+        <input type="submit" value="Continue ...">
+    </td>
+</tr>
+
+</table>
+</form>
+
+<br>
+
+</body>
+
+</html>

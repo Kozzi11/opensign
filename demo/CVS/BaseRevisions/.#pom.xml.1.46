@@ -1,0 +1,133 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>demo</artifactId>
+    <packaging>war</packaging>
+    <name>Demo Client</name>
+    <parent>
+        <groupId>org.openoces</groupId>
+        <version>2.1.14-SNAPSHOT</version>
+        <artifactId>opensign</artifactId>
+    </parent>
+    <properties>
+        <org.springframework.version>3.1.2.RELEASE</org.springframework.version>
+    </properties>
+    <dependencies>
+        <!-- Servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.openoces</groupId>
+            <artifactId>ooapi</artifactId>
+            <version>${org.openoces.ooapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-transports-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-common-utilities</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.2</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <delete dir="src/main/webapp/resources/opensign/unstable" />
+                                <mkdir dir="src/main/webapp/resources/opensign/unstable" />
+
+                                <unzip src="../applet/bootstrap/target/opensign-${project.version}-bin.zip" dest="src/main/webapp/resources/opensign/unstable" overwrite="true" />
+                                <copy file="src/main/webapp/resources/opensign/unstable/signed_test/OpenSign-bootstrapped.jar" todir="src/main/webapp/resources/opensign/unstable" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <finalName>demo</finalName>
+    </build>
+</project>

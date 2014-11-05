@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/applet/applet.iml" filepath="$PROJECT_DIR$/applet/applet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/attachment/attachment-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/attachment/attachment-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/bootstrap/bootstrap.iml" filepath="$PROJECT_DIR$/applet/bootstrap/bootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/capi/capi-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/capi/capi-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/cdcard/cdcard-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/cdcard/cdcard-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/checksum/checksum.iml" filepath="$PROJECT_DIR$/applet/checksum/checksum.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/cryptoki/cryptoki-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/cryptoki/cryptoki-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/jsse/jsse-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/jsse/jsse-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/oces/oces-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/oces/oces-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opensign.iml" filepath="$PROJECT_DIR$/opensign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/opensign/opensign-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/opensign/opensign-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pdf-validator/pdf-validator.iml" filepath="$PROJECT_DIR$/pdf-validator/pdf-validator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pdf-validator/application/pdf-validator-application.iml" filepath="$PROJECT_DIR$/pdf-validator/application/pdf-validator-application.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pdf-validator/distribution/pdf-validator-distribution.iml" filepath="$PROJECT_DIR$/pdf-validator/distribution/pdf-validator-distribution.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pdf-validator/engine/pdf-validator-engine.iml" filepath="$PROJECT_DIR$/pdf-validator/engine/pdf-validator-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/pkcs12/pkcs12-plugin.iml" filepath="$PROJECT_DIR$/applet/plugins/pkcs12/pkcs12-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applet/plugins/plugins.iml" filepath="$PROJECT_DIR$/applet/plugins/plugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test-utils/test-utils.iml" filepath="$PROJECT_DIR$/test-utils/test-utils.iml" />
+    </modules>
+  </component>
+</project>
+

@@ -1,0 +1,229 @@
+package org.openoces.opensign.validator.client;
+
+import org.jpedal.PdfDecoder;
+import org.jpedal.fonts.FontMappings;
+import org.jpedal.objects.PdfPageData;
+
+import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * This class is a simple JFrame to show a PDF file (using JPedal lib).
+ * It also has simple navigation capabilities using page up and page down
+ * keyboard support, and a input field to enter a specific page to show.
+ *
+ * @author: Michael Martinsen (mmart)
+ */
+public class PdfFrame extends JFrame {
+    private static final String CAPTION_EXIT = "Exit";
+
+    private PdfDecoder pdfDecoder;
+    private JScrollPane pdfScrollPane;
+    private JTextField pageNumberField;
+    private JLabel pageNumbers;
+    private int currentPage = 1;
+    private int numberOfPages;
+
+    Pattern pageNumberPattern = Pattern.compile("^\\d+$");
+
+    @Override
+    protected void frameInit() {
+        super.frameInit();
+
+        getContentPane().setLayout(new BorderLayout());
+
+        FontMappings.setFontReplacements();
+
+        pdfDecoder = new PdfDecoder(true);
+
+        add(getNavigationPanel(), BorderLayout.NORTH);
+        add(getPdfPanel(), BorderLayout.CENTER);
+        add(getExitPanel(), BorderLayout.SOUTH);
+
+        initFrameCloseHandling();
+    }
+
+    private Component getNavigationPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+
+        panel.add(new JLabel("Page "));
+
+        Action enterAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isValidNumber(pageNumberField.getText())) {
+                    int pageToGoto = Integer.parseInt(pageNumberField.getText());
+                    if (pageToGoto > 0 && pageToGoto <= numberOfPages) {
+                        setPage(pageToGoto);
+                    }
+                }
+            }
+        };
+
+        pageNumberField = new JTextField("1");
+        pageNumberField.setPreferredSize(new Dimension(25, pageNumberField.getPreferredSize().height));
+        pageNumberField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+        pageNumberField.getActionMap().put("enter", enterAction);
+
+
+        panel.add(pageNumberField);
+
+        JLabel slashLabel = new JLabel(" / ");
+        panel.add(slashLabel);
+
+        pageNumbers = new JLabel();
+        panel.add(pageNumbers);
+
+        return panel;
+    }
+
+    private boolean isValidNumber(String pageToShow) {
+        Matcher matcher = pageNumberPattern.matcher(pageToShow);
+
+        return matcher.matches();
+    }
+
+    private void initFrameCloseHandling() {
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                JFrame frame = (JFrame) e.getSource();
+
+                // No dialog for confirmation - just close...
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
+        });
+    }
+
+    private Component getExitPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton buttonExit = new JButton(CAPTION_EXIT);
+        panel.add(buttonExit);
+        buttonExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Fire a "real" close window event (which will be handle by the window listener...
+                Window topContainer = (Window) ((JButton) e.getSource()).getTopLevelAncestor();
+                getToolkit().getSystemEventQueue().postEvent(new WindowEvent(topContainer, WindowEvent.WINDOW_CLOSING));
+            }
+        });
+
+        return panel;
+    }
+
+    private JPanel getPdfPanel() {
+        JPanel pdfPanel = new JPanel(new BorderLayout());
+
+        pdfPanel.add(getPdfScrollPane());
+        return pdfPanel;
+    }
+
+    private JScrollPane getPdfScrollPane() {
+        pdfScrollPane = new JScrollPane();
+        pdfScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        pdfScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        pdfScrollPane.setViewportView(pdfDecoder);
+
+        Action pageUpAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousPage();
+            }
+        };
+        Action pageDownAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nextPage();
+            }
+        };
+
+        getRootPane().getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "pageUp");
+        getRootPane().getActionMap().put("pageUp", pageUpAction);
+        getRootPane().getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "pageDown");
+        getRootPane().getActionMap().put("pageDown", pageDownAction);
+
+        return pdfScrollPane;
+    }
+
+    void loadAndShowPdfFile(File pdfFile) {
+        try {
+            //this opens the PDF and reads its internal details
+            pdfDecoder.openPdfFile(pdfFile.getAbsolutePath());
+
+            //these 2 lines opens page 1 at 100% scaling
+            pdfDecoder.decodePage(1);
+            pdfDecoder.setPageParameters(1, 1); //values scaling (1=100%). page number
+            pdfDecoder.invalidate();
+
+            setTotalNumberOfPages(getNumberPagesInPdf());
+
+            Dimension pdfPageSize = getPdfPageSize();
+            setSize(pdfPageSize.width + 100, pdfPageSize.height + 150);
+            setLocationRelativeTo(null);//centre on screen
+            setTitle(pdfFile.getName());
+
+            pack();
+            setVisible(true);
+            repaint();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void nextPage() {
+        if (currentPage < numberOfPages) {
+            currentPage++;
+            setPage(currentPage);
+        }
+    }
+
+    private void previousPage() {
+        if (currentPage >= 2) {
+            currentPage--;
+            setPage(currentPage);
+        }
+    }
+
+    private void setPage(int pageNumber) {
+        try {
+            pdfDecoder.decodePage(pageNumber);
+            pdfDecoder.invalidate();
+            repaint();
+            updatePageNumber(pageNumber);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    private Dimension getPdfPageSize() {
+        PdfPageData pdfPageData = pdfDecoder.getPdfPageData();
+        int x = pdfPageData.getMediaBoxWidth(0);
+        int y = pdfPageData.getMediaBoxHeight(0);
+
+        return new Dimension(x,y);
+    }
+
+    private int getNumberPagesInPdf() {
+        PdfPageData pdfPageData = pdfDecoder.getPdfPageData();
+        return pdfPageData.getPageCount();
+    }
+
+    private void updatePageNumber(int pageNumber) {
+        pageNumberField.setText(String.valueOf(pageNumber));
+    }
+
+    private void setTotalNumberOfPages(int pages) {
+        numberOfPages = pages;
+        pageNumbers.setText(String.valueOf(numberOfPages));
+    }
+}

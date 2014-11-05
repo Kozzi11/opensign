@@ -1,0 +1,198 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>bootstrap</artifactId>
+    <packaging>jar</packaging>
+    <name>Bootstrap Applet</name>
+    <parent>
+        <groupId>org.openoces</groupId>
+        <version>2.1.14-SNAPSHOT</version>
+        <artifactId>applet</artifactId>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>pdf-validator-distribution</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>extract keystore</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <!-- decorators -->
+                                    <groupId>org.openoces</groupId>
+                                    <artifactId>OpenSignAppletSigningCertificate</artifactId>
+                                    <version>1.0.0</version>
+                                    <type>jks</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/cert/</outputDirectory>
+                                    <includes>**/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="target/plugins" />
+
+                                <copy file="../plugins/attachment/target/attachment-bin.zip" tofile="target/plugins/attachment.zip" />
+                                <copy file="../plugins/capi/target/capi-bin.zip" tofile="target/plugins/capi.zip" />
+                                <copy file="../plugins/cdcard/target/cdcard-bin.zip" tofile="target/plugins/cdcard.zip" />
+                                <copy file="../plugins/jsse/target/jsse-bin.zip" tofile="target/plugins/jsse.zip" />
+                                <copy file="../plugins/oces/target/oces-bin.zip" tofile="target/plugins/oces.zip" />
+                                <copy file="../plugins/cryptoki/target/cryptoki-bin.zip" tofile="target/plugins/cryptoki.zip" />
+                                <copy file="../plugins/opensign/target/opensign-bin.zip" tofile="target/plugins/opensign.zip" />
+                                <copy file="../plugins/pkcs12/target/pkcs12-bin.zip" tofile="target/plugins/pkcs12.zip" />
+                                <copy file="../plugins/pdf/target/pdf-bin.zip" tofile="target/plugins/pdf.zip" />
+
+                                <copy file="../../jni/microsoftcryptoapi/MicrosoftCryptoApi_0_6.dll" todir="target/plugins" />
+                                <copy file="../../jni/microsoftcryptoapi/MicrosoftCryptoApi_x64_0_6.dll" todir="target/plugins" />
+
+                                <java classname="org.openoces.opensign.client.applet.bootstrap.DownloadChecksumGenerator">
+                                    <arg value="${basedir}/src/main/java/org/openoces/opensign/client/applet/bootstrap/DownloadChecksums.java" />
+                                    <arg value="${basedir}/target/plugins" />
+                                    <classpath>
+                                        <pathelement path="../checksum/target/classes" />
+                                    </classpath>
+                                </java>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>sign</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeClassifiers>
+                        <classifier>test</classifier>
+                    </includeClassifiers>
+                    <keystore>${project.build.directory}/cert/OpenSignAppletSigningCertificate-1.0.0.jks</keystore>
+                    <alias>nets danid a/s - opensigncertificate</alias>
+                    <keypass>Test1234</keypass>
+                    <storepass>Test1234</storepass>
+                    <certs />
+                    <verbose />
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <configuration>
+                            <classifier>test</classifier>
+                            <archive>
+                                <manifest>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <Sealed>true</Sealed>
+                                    <Permissions>all-permissions</Permissions>
+                                    <Codebase>*</Codebase>
+                                    <Application-Name>OpenSign</Application-Name>
+                                    <Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
+                                    <Caller-Allowable-Codebase>*</Caller-Allowable-Codebase>
+				</manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>prod</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <classifier>unsigned</classifier>
+                            <archive>
+                                <manifest>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <Sealed>true</Sealed>
+                                    <Permissions>all-permissions</Permissions>
+                                    <Codebase>*</Codebase>
+                                    <Application-Name>OpenSign</Application-Name>
+                                    <Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/zip.xml</descriptor>
+                    </descriptors>
+                    <finalName>opensign-${project.version}</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+        <finalName>OpenSign-bootstrapped</finalName>
+    </build>
+</project>

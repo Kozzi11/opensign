@@ -1,0 +1,258 @@
+/*
+	Copyright 2011 Paw F. Kjeldgaard
+	Copyright 2011 Daniel Andersen
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+
+ * @author Daniel Andersen <daand@nets.eu>
+*/
+
+/* $Id: SignPanel.java,v 1.6 2012/12/19 12:28:02 pakj Exp $ */
+
+package org.openoces.opensign.client.applet.dialogs.panel;
+
+import org.openoces.opensign.appletsupport.AttachmentSupport;
+import org.openoces.opensign.certificate.CertificateHandler;
+import org.openoces.opensign.client.applet.CallBackHandler;
+import org.openoces.opensign.client.applet.GuiCallback;
+import org.openoces.opensign.client.applet.ParamReader;
+import org.openoces.opensign.client.applet.dialogs.AttachmentSupportFactory;
+import org.openoces.opensign.client.applet.dialogs.DefaultAttachmentSupportFactory;
+import org.openoces.opensign.client.applet.dialogs.GuiUtil;
+import org.openoces.opensign.client.applet.dialogs.components.SignTextDisplay;
+import org.openoces.opensign.client.applet.dialogs.components.SigntextValidationException;
+import org.openoces.opensign.client.applet.dialogs.components.TextMimeType;
+import org.openoces.opensign.client.applet.dialogs.listeners.*;
+import org.openoces.opensign.client.applet.resources.ResourceManager;
+import org.openoces.opensign.utils.Base64;
+import org.openoces.opensign.utils.FileLog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Properties;
+
+public class SignPanel extends AbstractCertificateViewPanel implements SignCertificateView {
+    private JLabel titleLabel;
+    private SignTextDisplay taSignText;
+    private JLabel listLabel;
+
+    private AttachmentSupport attachmentSupport;
+
+    private java.util.List<JButton> actionButtons;
+
+    private String signText;
+
+    private JButton printButton;
+
+    public SignPanel(CallBackHandler callbackHandler, java.util.List<CertificateHandler> certificates, boolean supportBrowsingForCertificate) {
+        super(callbackHandler, certificates, supportBrowsingForCertificate, new DefaultCertificateFilter());
+
+        this.titleLabel = componentFactory.createHeaderLabel(ResourceManager.getString("HEADER_SIGNTEXT"));
+        this.listLabel = componentFactory.createLabel("CERTIFICATE_LIST");
+
+        JButton viewAttachmentButton = componentFactory.createNormalButton("ATTACHMENT_LIST", false);
+        AttachmentSupportFactory attachmentSupportFactory = new DefaultAttachmentSupportFactory();
+        attachmentSupport = attachmentSupportFactory.createAttachmentSupport(callbackHandler, viewAttachmentButton);
+
+        ParamReader paramReader = callbackHandler.getParamReader();
+
+        actionButtons = new ArrayList<JButton>();
+
+        actionButtons.add(bOk);
+        actionButtons.add(bDetails);
+
+        if (attachmentSupport != null) {
+            viewAttachmentButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    showAttachments();
+                }
+            });
+            actionButtons.add(viewAttachmentButton);
+        }
+
+        actionButtons.add(bCancel);
+
+        signText = paramReader.getSigntext().toString();
+        TextMimeType signTextFormat = getTextMimeType(paramReader);
+        String b64stylesheet = paramReader.getParameter("signTransformation");
+        String stylesheet = "";
+        if (b64stylesheet != null){
+            byte[] ba = Base64.decode(b64stylesheet.getBytes());
+            try {
+                stylesheet = new String(ba, "UTF8");
+            } catch (UnsupportedEncodingException e) {
+                FileLog.error("Invalid stylesheet", e);
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            taSignText = componentFactory.createSignTextDisplay(signTextFormat, signText, stylesheet);
+            taSignText.setFocusTraversalKeysEnabled(false);
+            taSignText.addFocusListener(createFocusListener(taSignText));
+        } catch (SigntextValidationException e) {
+            FileLog.error("Invalid sign text", e);
+            throw new RuntimeException(e);
+        }
+
+        bCancel.addActionListener(new CancelLogonActionListener("Sign", callbackHandler));
+
+        bOk.addActionListener(new SignActionListener(callbackHandler, this, attachmentSupport, bOk));
+
+        printButton = componentFactory.createLinkImageButton("PRINT_LABEL", "PRINT_TOOLTIP", "print_normal.png");
+        printButton.setRolloverEnabled(true);
+        printButton.setRolloverIcon(new ImageIcon(GuiUtil.createImage("print_hover.png")));
+        printButton.addActionListener(new PrintActionListener(taSignText));
+    }
+
+    private TextMimeType getTextMimeType(ParamReader paramReader) {
+        String signTextFormat = paramReader.getParameter("signTextFormat");
+        return signTextFormat != null ? TextMimeType.valueOf(signTextFormat) : TextMimeType.PLAIN;
+    }
+
+    @Override
+    protected String getOkButtonTextId() {
+        return "OK_SIGN_MODERN";
+    }
+
+    @Override
+    protected String getBrowseButtonTextId() {
+        return "FUNCTIONS_MODERN_LOGON";
+    }
+
+    @Override
+    protected JComponent[] getActionButtons() {
+        return actionButtons.toArray(new JButton[actionButtons.size()]);
+    }
+
+    @Override
+    protected JComponent getContentPanel() {
+        JPanel signPanel = componentFactory.createPanel(new BorderLayout());
+        signPanel.add(titleLabel, BorderLayout.NORTH);
+
+        JScrollPane sp = componentFactory.createScrollPane(taSignText);
+        sp.setName("SignScrollPane");
+        sp.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                GuiUtil.doInGui(new GuiCallback() {
+                    public void doInGui() {
+                        taSignText.grabFocus();
+                        taSignText.setCaretPosition(0);
+                    }
+                });
+            }
+        });
+        signPanel.add(sp, BorderLayout.CENTER);
+
+        JPanel printPanel = componentFactory.createPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        printPanel.add(printButton);
+
+        JPanel panel = componentFactory.createPanel(new GridBagLayout());
+
+        int y = 0;
+        y = GuiUtil.addSingleLine(panel, 0, y, printPanel);
+        y = GuiUtil.addSingleLine(panel, 0, y, listLabel);
+        y = GuiUtil.addComboBoxLine(panel, 0, y, chCertList, bFunctions);
+        if(lSocialSecurityNumber != null && tfSocialSecurityNumber != null) {
+            y = GuiUtil.addSingleLine(panel, 0, y, lSocialSecurityNumber);
+            y = GuiUtil.addTextFieldLine(panel, 0, y, tfSocialSecurityNumber);
+        }
+        if(lOptionalEntry != null && tfOptionalEntry != null) {
+            y = GuiUtil.addSingleLine(panel, 0, y, lOptionalEntry);
+            y = GuiUtil.addTextFieldLine(panel, 0, y, tfOptionalEntry);
+        }
+        GuiUtil.addFillerLine(panel, y);
+
+        signPanel.add(panel, BorderLayout.SOUTH);
+
+        return signPanel;
+    }
+
+    @Override
+    public JComponent getFocusComponent() {
+        return bOk;
+    }
+
+    private void showAttachments() {
+        attachmentSupport.show(callbackHandler);
+    }
+
+    @Override
+    public Properties getSignProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.put("openoces_opensign_layout_signtext_fontname", taSignText.getFont().getFontName());
+        } catch (java.lang.NoSuchMethodError e) {
+            FileLog.debug("Applet signtext font name not available");
+        }
+        properties.put("openoces_opensign_layout_color_background", this.getBackground().getRed() + "," + this.getBackground().getGreen() + "," + this.getBackground().getBlue());
+        try {
+            properties.put("openoces_opensign_layout_size_width", "" + this.getWidth());
+            properties.put("openoces_opensign_layout_size_height", "" + this.getHeight());
+        } catch (java.lang.NoSuchMethodError e) {
+            FileLog.debug("Applet dimensions not available");
+        }
+        try {
+            properties.put("openoces_opensign_layout_signtext_fontsize", "" + taSignText.getFont().getSize());
+        } catch (java.lang.NoSuchMethodError e) {
+            FileLog.debug("Applet signtext font size not available");
+        }
+        return properties;
+    }
+
+    public SignText getSignText() {
+        return new StringSignText(signText);
+    }
+
+    private FocusListener createFocusListener(final JComponent signTextComponent) {
+        return new FocusListener() {
+            private final KeyListener listener = new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    switch (e.getKeyCode()) {
+                        case KeyEvent.VK_TAB:
+                            GuiUtil.requestFocus(printButton);
+                            break;
+                    }
+                }
+            };
+
+            public void focusGained(FocusEvent e) {
+                GuiUtil.doInGui(new GuiCallback() {
+                    public void doInGui() {
+                        signTextComponent.addKeyListener(listener);
+                    }
+                });
+            }
+
+            public void focusLost(FocusEvent e) {
+                GuiUtil.doInGui(new GuiCallback() {
+                    public void doInGui() {
+                        signTextComponent.removeKeyListener(listener);
+                    }
+                });
+            }
+        };
+    }
+}

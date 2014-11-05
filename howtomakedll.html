@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<title>The making of the Microsoft keystore interface DLL</title>
+</head>
+<body>
+
+<h1>The making of the Microsoft keystore interface DLL</h1>
+This is a small <b>*HOWTO*</b> explaining the build procedures of the microsoft keystore DLL using cygwin
+<ol>
+<li>Enter directory where opensign has been checked out
+<p>In the following example the location is:</p>
+<pre>
+$ cd  /cygdrive/d/eclipse/workspace/opensign
+</pre>
+<p>Enter directory where the code is placed:</p>
+<pre>
+$ cd jni/microsoftcryptoapi
+</pre>
+<p>this is where the code is placed</p>
+</li>
+<li>Setup the environment. 
+<p>In the example JAVA is installed in /cygdrive/d/j2sdk1.4.2</p>
+<pre>
+Type:
+$ export JAVA_HOME=/cygdrive/d/j2sdk1.4.2
+
+$ export PATH=$JAVA_HOME/bin:$PATH
+</pre>
+</li>
+<li>test the java environment by typing:
+<pre>
+$ javah
+</pre>
+<p>This sould result in something like:</p>
+<pre>
+> Usage: javah [options] classes
+> ...
+</pre>
+</li>
+<li>Setup the CLASSPATH
+<p>The makefile describes the setting. Type:</p>
+<pre>
+$ export CLASSPATH=../../classes
+</pre>
+</li>
+<li>Make the DLL
+<p>Type:</p>
+<pre>
+$ make dll
+</pre>
+</li>
+<li>That should be it!
+<p>Please report any problems back to the developer mailing list on <a href="http://openoces.org">http://openoces.org</a></p>
+</li>
+</ol>
+Jens Bo Friis
+<br>
+<a href="http://it-practice.dk">http://it-practice.dk</a>
+
+
+
+</body>
+</html>

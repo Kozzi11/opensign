@@ -1,0 +1,295 @@
+/*
+    Copyright 2011 Paw F. Kjeldgaard
+	Copyright 2012 Anders M. Hansen
+
+    This file is part of OpenSign.
+
+    OpenSign is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or
+    (at your option) any later version.
+
+    OpenSign is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with OpenOcesAPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    Note to developers:
+    If you add code to this file, please take a minute to add an additional
+    copyright statement above and an additional
+    @author statement below.
+    
+ * @author Anders M. Hansen <consult@ajstemp.dk>
+*/
+
+/* $Id: SignActionListener.java,v 1.6 2012/12/13 11:39:59 anmha Exp $ */
+
+package org.openoces.opensign.client.applet.dialogs.listeners;
+
+import org.openoces.opensign.appletsupport.Attachment;
+import org.openoces.opensign.appletsupport.AttachmentSupport;
+import org.openoces.opensign.certificate.CertificateHandler;
+import org.openoces.opensign.client.applet.*;
+import org.openoces.opensign.client.applet.dialogs.*;
+import org.openoces.opensign.client.applet.dialogs.components.TextMimeType;
+import org.openoces.opensign.client.applet.resources.ResourceManager;
+import org.openoces.opensign.exceptions.InputDataError;
+import org.openoces.opensign.exceptions.UserCancel;
+import org.openoces.opensign.utils.Base64;
+import org.openoces.opensign.utils.FileLog;
+import org.openoces.opensign.utils.Version;
+import org.openoces.opensign.xml.xmldsig.SignatureGenerator;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+public class SignActionListener implements ActionListener, PasswordEnteredListener {
+    private CallBackHandler callBackHandler;
+    private SignCertificateView certificateView;
+    private AttachmentSupport attachmentSupport;
+    private ProgressUI progressUI;
+    private JButton actionButton;
+
+    public SignActionListener(CallBackHandler callBackHandler, SignCertificateView certificateView, AttachmentSupport attachmentSupport, JButton actionButton) {
+        this.callBackHandler = callBackHandler;
+        this.certificateView = certificateView;
+        this.attachmentSupport = attachmentSupport;
+        this.actionButton = actionButton;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        CertificateHandler currentCertificate = certificateView.getSelectedCertificate();
+        if (currentCertificate != null) {
+        	certificateView.stopCertificatePollerService(); //User has chosen a certificate - no reason to keep polling.
+            progressUI = new DefaultProgressUI(callBackHandler.getDefaultGlassPane());
+            progressUI.show((JApplet) callBackHandler);
+            currentCertificate.promptForPassword(callBackHandler, actionButton, this);
+        }
+    }
+
+    public void validPasswordEntered(char[] password) {
+        try {
+            CertificateHandler selected = certificateView.getSelectedCertificate();
+            if (!selected.isInfoAvailable()) {
+                throw new IOException("Could not read certificate info.");
+            }
+
+            // check for a valid state of attachments if they exists ..
+            if (attachmentSupport == null || attachmentSupport.isSigningOK(actionButton)) {
+
+                ParamReader paramReader = callBackHandler.getParamReader();
+                Properties p = getSignProperties(paramReader);
+                p.putAll(certificateView.getSignProperties());
+
+                String signTextFormat = paramReader.getParameter("signTextFormat");
+                if (TextMimeType.XML.toString().equals(signTextFormat)) {
+                    addStylesheet(p, paramReader.getParameter("signTransformation"), paramReader.getParameter("signTransformationId"));
+                }
+                // new signature generation:
+                Properties visibleProps = new Properties();
+                String socialSecurityNumber = certificateView.getSsn();
+                if (!isEmpty(socialSecurityNumber)) {
+                    visibleProps.put(SignatureGenerator.SOCIALSECURITYNUMBER, socialSecurityNumber);
+                }
+                String optionalEntry = certificateView.getOptionalEntry();
+                if (!isEmpty(optionalEntry)) {
+                    visibleProps.put(SignatureGenerator.OPTIONALFIELD2, optionalEntry);
+                }
+
+                String hostName = getHost();
+                visibleProps.put(SignatureGenerator.HOSTNAME, hostName);
+                visibleProps.put(SignatureGenerator.LOGONTO, hostName);
+
+                addEnvironmentProperties(p);
+
+                Attachment[] attachments = null;
+                if (attachmentSupport != null) {
+                    // todo: find out if all input parameters should be added here - and various other methods maybe changed accordingly.
+                    p.put("opensign_openoces_attachment_input", paramReader.getParameter("attachments"));
+                    attachments = attachmentSupport.getAttachments();
+                    FileLog.debug("Attachments size = " + attachments.length);
+                } else {
+                    FileLog.debug("No attachments!!!!");
+                }
+
+                SignatureGenerator sigGen = paramReader.createSignatureGenerator();
+                FileLog.debug("Using signature generator: " + sigGen.getClass().getName());
+                String signature = sigGen.sign(selected, certificateView.getSignText(), visibleProps, p, attachments, callBackHandler.getSignatureAlgorithmFactory(password));
+
+                handleOk("onSignOK", signature);
+
+                FileLog.info("OpenSign finished!!!");
+            }
+        } catch (UserCancel e) {
+            // do nothing
+        } catch (InputDataError ex) {
+            // Tell the user but let the user try again
+            userMessage(ex.getMessage());
+        } catch (IOException ex) {
+            FileLog.error("could not create signature, possibly wrong password", ex);
+            handleError("onSignError", "possibly wrong password");
+        } catch (Exception ex) {
+            FileLog.error("could not create signature", ex);
+            handleError("onSignError", "possibly wrong password");
+        } catch (Throwable t) {
+            FileLog.fatal(t.getMessage(), t);
+        } finally {
+            progressUI.hide((JApplet) callBackHandler);
+            GuiUtil.requestFocus(actionButton);
+        }
+    }
+
+    /**
+     * Adds the stylesheet to the list of invisible properties.
+     *
+     * @param props
+     * @param b64Stylesheet
+     * @param stylesheetIdentifier
+     */
+    private void addStylesheet(Properties props, final String b64Stylesheet, final String stylesheetIdentifier) {
+        if (isEmpty(b64Stylesheet)) {
+            return;
+        }
+        try {
+            byte[] digest = OS.getCryptoSupport().sha256(b64Stylesheet.getBytes("utf-8"));
+            props.put(SignatureGenerator.STYLESHEETDIGEST, new String(Base64.encode(digest)));
+            if (!isEmpty(stylesheetIdentifier)) {
+                props.put(SignatureGenerator.STYLESHEETIDENTIFIER, stylesheetIdentifier);
+            }
+        } catch (GeneralSecurityException e) {
+            FileLog.error(e.getMessage(), e);
+        } catch (UnsupportedEncodingException e) {
+            FileLog.error(e.getMessage(), e);
+        }
+    }
+
+
+    public void invalidPasswordEntered(String message) {
+        progressUI.hide((JApplet) callBackHandler);
+        userMessage(message);
+        GuiUtil.requestFocus(actionButton);
+    }
+
+    public void cancelled() {
+        progressUI.hide((JApplet) callBackHandler);
+        GuiUtil.requestFocus(actionButton);
+    }
+
+    private Properties getSignProperties(ParamReader paramReader) {
+        String signProperties = paramReader.getParameter("signproperties");
+        Properties properties = new Properties();
+        if (signProperties != null) {
+            StringTokenizer st = new StringTokenizer(signProperties, ",;");
+            while (st.hasMoreTokens()) {
+                String namevalue = st.nextToken();
+                String name = namevalue.substring(0, namevalue.indexOf('=')).trim();
+                String value = namevalue.substring(namevalue.indexOf('=') + 1, namevalue.length()).trim();
+                properties.put(name, value);
+            }
+        }
+        return properties;
+    }
+
+
+    private void addEnvironmentProperties(Properties p) {
+
+        String ss[][] = {
+                {"openoces_opensign_environment_applet_version", Version.getVersion()},
+                {"openoces_opensign_environment_applet_digest", "todo: implement"},
+                {"openoces_opensign_environment_os_name", System.getProperty("os.name")},
+                {"openoces_opensign_environment_browser_name", System.getProperty("browser")},
+                {"openoces_opensign_environment_browser_vendor", System.getProperty("browser.vendor")},
+                {"openoces_opensign_environment_browser_version", System.getProperty("browser.version")},
+                {"openoces_opensign_environment_java_vendor", System.getProperty("java.vendor")},
+                {"openoces_opensign_environment_java_version", System.getProperty("java.version")},
+                {"openoces_opensign_environment_applet_context", ((JApplet) callBackHandler).getAppletContext().toString()},
+                {"openoces_opensign_environment_local_time", new Date().toString()},
+                {"openoces_opensign_environment_locale", Locale.getDefault().toString()},
+        };
+        for (String[] s : ss) {
+            //String[] s = ss[i];
+            String k = s[0];
+            String v = s[1];
+            if (v != null) {
+                p.put(k, v);
+            } else {
+                /* not all properties are defined in all java-plugins, so we expect this */
+                FileLog.debug("value for key: " + k + " is not available");
+            }
+        }
+    }
+
+    private String getHost() {
+        String host = callBackHandler.getParamReader().getParameter("logonto");
+        if (host == null || host.length() == 0) {
+            URL documentBase = callBackHandler.getDocumentBase();
+            host = OcesAppletUtils.getDocBase(documentBase);
+        }
+
+        try {
+            URL hostUrl = new URL(host);
+            host = hostUrl.getHost();
+        } catch (MalformedURLException e) {
+            // stick with the old text
+        }
+        return host;
+    }
+
+
+    // end RM polling code
+    // general handling of result of signing/logging on
+    private void handleOk(final String javaScriptFunction, String signature) {
+        try {
+            final String base64signature = new String(Base64.encode(signature.getBytes()), "UTF8");
+            callBackHandler.setOutputData(base64signature);
+            reportDataSigned();
+            JavascriptRunner javascriptRunner = callBackHandler.getJavascriptRunner();
+            javascriptRunner.callFunction(javaScriptFunction, new String[]{base64signature});
+        } catch (UnsupportedEncodingException e) {
+            FileLog.error(e.getMessage(), e);
+        }
+    }
+
+    private void reportDataSigned() {
+        callBackHandler.setAppletState("datasigned");
+    }
+
+    private void handleError(String javaScriptFunction, String msg) {
+        JavascriptRunner javascriptRunner = callBackHandler.getJavascriptRunner();
+        javascriptRunner.callFunction(javaScriptFunction, new String[]{msg});
+        reportError("could not create signature");
+    }
+
+    private void userMessage(String msg) {
+        DlgInformation dlgInformation = new DlgInformation(callBackHandler, actionButton, ResourceManager.getString("DLG_ERROR_HEADER"), msg);
+        dlgInformation.show();
+    }
+
+    /**
+     * Reports an error and clears the output data.
+     */
+    private void reportError(String errorDescription) {
+        callBackHandler.setOutputData(errorDescription);
+        callBackHandler.setAppletState("error");
+    }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.trim().length() == 0;
+    }
+
+}
