@@ -129,6 +129,7 @@ public class SignActionListener
                 String serialNumber = selected.getSerialNumber().toString();
                 String issuerDN = selected.getIssuerDN().getName();
 
+
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 KeySpec keySpec = new X509EncodedKeySpec(Base64.decode("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu0QEOgZtNvCxKr2M5xLEffyYWG4LhPzgL3me8CWar5+qUNv1z7Ij2kMVmizbYNzOPxjcoPKM5O7iviwjEZeQrDlMf59L/fhM+OUVyhxR5EilZifKHbEj5c25bBeX2C89mdB8r9uktqQfbMSPYSStlj3Dg+B/DwuG+bbYRDuiJbTwxNjqdk7vKl4lLa3KiJZ02JdYfz7jFFWMGKqVTX1Aae5lxqGNQxLulpqXOeGyVzdzZ9cSoYoKcMcqVmhs1EA4YRM2pRaaPLCIavvVoJ+SvaS2hvKtVgGB7eVtc2KEm43u8IsqlZHocwJsuAEqftb1j24sEHqPXrMAt8HyhdXu1QIDAQAB".getBytes()));
                 PublicKey pk = keyFactory.generatePublic(keySpec);
@@ -171,7 +172,8 @@ public class SignActionListener
                     if (!certIsOk)
                         throw new MyException("Neplatny certifikat dle CA", "102");
                 } else if (issuerDN.contains("I.CA")) {
-                    URL url = new URL("http://q.ica.cz/cgi-bin/crt_qpub.cgi?action=getcertlist&sn_f=" + serialNumber + "&nb_f=&na_f=&cn=&email=&o=");
+                    DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("cs", "CZ"));
+                    URL url = new URL("http://q.ica.cz/cgi-bin/crt_qpub.cgi?page=Cert&action=search&fromSn=" + serialNumber + "&fromNotBefore=" + df.format(selected.getNotBefore()) + "&fromNotAfter=" + df.format(selected.getNotAfter()) + "&cn=&email=&organization=&search=Hledat");
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                     //connection.setDoOutput(true);
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -179,7 +181,7 @@ public class SignActionListener
                     boolean certIsOk = false;
                     String line;
                     while ((line = br.readLine()) != null) {
-                        if (line.contains("platný")) {
+                        if (line.contains("et nalezen") && !line.contains("<span>0")) {
                             certIsOk = true;
                             break;
                         }
