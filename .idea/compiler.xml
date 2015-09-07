@@ -22,19 +22,97 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="attachment-plugin" />
-        <module name="bootstrap" />
-        <module name="capi-plugin" />
-        <module name="cdcard-plugin" />
-        <module name="checksum" />
-        <module name="cryptoki-plugin" />
         <module name="demo" />
-        <module name="jsse-plugin" />
-        <module name="oces-plugin" />
-        <module name="opensign-plugin" />
-        <module name="pdf-validator-application" />
-        <module name="pdf-validator-engine" />
+      </profile>
+      <profile default="false" name="Annotation profile for cdcard-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="cdcard-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for pkcs12-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="pkcs12-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for checksum" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="checksum" />
+      </profile>
+      <profile default="false" name="Annotation profile for pdf-validator-engine" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="pdf-validator-engine" />
+      </profile>
+      <profile default="false" name="Annotation profile for cryptoki-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="cryptoki-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for pdf-validator-application" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="pdf-validator-application" />
+      </profile>
+      <profile default="false" name="Annotation profile for attachment-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="attachment-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for opensign-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="opensign-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for capi-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="capi-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for jsse-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="jsse-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for bootstrap" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="bootstrap" />
+      </profile>
+      <profile default="false" name="Annotation profile for oces-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="oces-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for test-utils" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="test-utils" />
       </profile>
     </annotationProcessing>
@@ -46,6 +124,7 @@
       <module name="cdcard-plugin" target="1.6" />
       <module name="checksum" target="1.6" />
       <module name="cryptoki-plugin" target="1.6" />
+      <module name="demo" target="1.5" />
       <module name="jsse-plugin" target="1.6" />
       <module name="oces-plugin" target="1.6" />
       <module name="opensign" target="1.6" />
@@ -60,4 +139,3 @@
     </bytecodeTargetLevel>
   </component>
 </project>
-

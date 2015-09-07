@@ -14,7 +14,7 @@
     <orderEntry type="module-library">
       <library name="Maven: java:java-plugin:jre-1.6.0">
         <CLASSES>
-          <root url="jar:///usr/lib/jvm/java-7-openjdk/jre/lib/plugin.jar!/" />
+          <root url="jar:///usr/lib/jvm/java-8-jdk/jre/lib/plugin.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -24,4 +24,3 @@
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
   </component>
 </module>
-

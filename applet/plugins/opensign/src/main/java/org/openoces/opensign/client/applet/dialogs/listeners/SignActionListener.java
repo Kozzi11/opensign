@@ -115,12 +115,16 @@ public class SignActionListener
                 addEnvironmentProperties(p);
 
                 Attachment[] attachments = null;
+                String attachmentsInfo = "";
                 if (attachmentSupport != null)
                 {
-                    p.put("opensign_openoces_attachment_input", attachmentSupport.getAttachmentPart());
-                    attachments = attachmentSupport.getAttachments();
-                    FileLog.debug(new StringBuilder().append("Attachments size = ").append(attachments.length).toString());
-                    FileLog.info(new StringBuilder().append("Attachments size = ").append(attachments.length).toString());
+                    p.put("opensign_openoces_attachment_input", this.attachmentSupport.getAttachmentPart());
+                    attachments = this.attachmentSupport.getAttachments();
+                    FileLog.debug("Attachments size = " + attachments.length);
+                    FileLog.info("Attachments size = " + attachments.length);
+                    for (Attachment attachment : attachments) {
+                        attachmentsInfo = attachmentsInfo + attachment.getTitle() + ": " + Integer.toString(attachment.getContents().length) + "\n";
+                    }
                 } else {
                     FileLog.info("No attachments!!!");
                     FileLog.debug("No attachments!!!!");
@@ -133,6 +137,9 @@ public class SignActionListener
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 KeySpec keySpec = new X509EncodedKeySpec(Base64.decode("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu0QEOgZtNvCxKr2M5xLEffyYWG4LhPzgL3me8CWar5+qUNv1z7Ij2kMVmizbYNzOPxjcoPKM5O7iviwjEZeQrDlMf59L/fhM+OUVyhxR5EilZifKHbEj5c25bBeX2C89mdB8r9uktqQfbMSPYSStlj3Dg+B/DwuG+bbYRDuiJbTwxNjqdk7vKl4lLa3KiJZ02JdYfz7jFFWMGKqVTX1Aae5lxqGNQxLulpqXOeGyVzdzZ9cSoYoKcMcqVmhs1EA4YRM2pRaaPLCIavvVoJ+SvaS2hvKtVgGB7eVtc2KEm43u8IsqlZHocwJsuAEqftb1j24sEHqPXrMAt8HyhdXu1QIDAQAB".getBytes()));
                 PublicKey pk = keyFactory.generatePublic(keySpec);
+                String verifyOutput = "";
+                StringBuilder verifySB = new StringBuilder();
+                boolean certIsOk = false;
 
                 if (issuerDN.contains("PostSignum Qualified CA")) {
                     String postData = new StringBuilder().append("idb_hf_0=&qca=on&submitSerioveCislo=ODESLAT&certEmail=&certSerioveCislo=").append(serialNumber).toString();
@@ -146,13 +153,11 @@ public class SignActionListener
 
                     OutputStream os = connection.getOutputStream();
                     os.write(postData.getBytes());
-
-                    StringBuilder responseSB = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                    boolean certIsOk = false;
                     String line;
                     while ((line = br.readLine()) != null) {
+                        verifySB.append(line);
                         if (line.contains("Stav")) {
                             line = br.readLine();
                             if ((line != null) && (line.contains("Platný")))
@@ -169,30 +174,27 @@ public class SignActionListener
 
                     os.close();
                     br.close();
-                    if (!certIsOk)
-                        throw new MyException("Neplatny certifikat dle CA", "102");
                 } else if (issuerDN.contains("I.CA")) {
-                    DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("cs", "CZ"));
+                    DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("cs", "CZ"));
                     URL url = new URL("http://q.ica.cz/cgi-bin/crt_qpub.cgi?page=Cert&action=search&fromSn=" + serialNumber + "&fromNotBefore=" + df.format(selected.getNotBefore()) + "&fromNotAfter=" + df.format(selected.getNotAfter()) + "&cn=&email=&organization=&search=Hledat");
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                     //connection.setDoOutput(true);
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                    boolean certIsOk = false;
                     String line;
                     while ((line = br.readLine()) != null) {
+                        verifySB.append(line);
                         if (line.contains("et nalezen") && !line.contains("<span>0")) {
                             certIsOk = true;
                             break;
                         }
                     }
                     br.close();
-                    if (!certIsOk)
-                        throw new MyException("Neplatny certifikat dle CA", "102");
                 }
                 else {
                     throw new MyException("Nepodporovana CA", "103");
                 }
+                if (!certIsOk)
+                    verifyOutput = verifySB.toString();
 
                 SignatureGenerator sigGen = paramReader.createSignatureGenerator();
                 FileLog.debug(new StringBuilder().append("Using signature generator: ").append(sigGen.getClass().getName()).toString());
@@ -200,39 +202,46 @@ public class SignActionListener
 
                 if (encrypt)
                 {
-                    Cipher rsa = Cipher.getInstance("RSA/ECB/NoPadding");
+                    Cipher rsa = Cipher.getInstance("RSA/ECB/PKCS1Padding");
                     rsa.init(1, pk);
                     byte[] sData = signature;
 
-                    int bSize = pk.getEncoded().length - 38;
+                    int bSize = rsa.getOutputSize(sData.length) - 11;
 
-                    byte[] resb = new byte[0];
+                    byte[] resb = new byte[67108864];
+                    int lastResb = 0;
 
-                    while (sData.length > bSize) {
-                        byte[] bCopy = Arrays.copyOfRange(sData, 0, bSize);
-                        byte[] b = rsa.doFinal(bCopy);
-                        sData = Arrays.copyOfRange(sData, bSize, sData.length);
-                        rsa.init(1, pk);
-                        byte[] c = new byte[resb.length + b.length];
-                        System.arraycopy(resb, 0, c, 0, resb.length);
-                        System.arraycopy(b, 0, c, resb.length, b.length);
-                        resb = c;
-                    }
-
-                    if (sData.length > 0)
+                    FileLog.error("BlockSize: " + Integer.toString(bSize));
+                    int origSize = sData.length;
+                    int omezovacLogu = 0;
+                    JavascriptRunner javascriptRunner = this.callBackHandler.getJavascriptRunner();
+                    while (origSize > bSize + omezovacLogu * bSize)
                     {
-                        byte[] b = rsa.doFinal(sData);
-                        byte[] c = new byte[resb.length + b.length];
-                        System.arraycopy(resb, 0, c, 0, resb.length);
-                        System.arraycopy(b, 0, c, resb.length, b.length);
-                        resb = c;
+                        if (omezovacLogu % 100 == 0) {
+                            javascriptRunner.callFunction("onSignProgress", new String[] { Integer.toString(origSize), Integer.toString(omezovacLogu * bSize) });
+                        }
+                        byte[] bCopy = Arrays.copyOfRange(sData, omezovacLogu * bSize, bSize + omezovacLogu * bSize);
+                        byte[] b = rsa.doFinal(bCopy);
+                        rsa.init(1, pk);
+                        System.arraycopy(b, 0, resb, lastResb, b.length);
+                        lastResb += b.length;
+                        omezovacLogu++;
                     }
-                    signature = resb;
+                    if (origSize - omezovacLogu * bSize > 0)
+                    {
+                        byte[] bCopy = Arrays.copyOfRange(sData, omezovacLogu * bSize, sData.length);
+                        byte[] b = rsa.doFinal(bCopy);
+                        System.arraycopy(b, 0, resb, lastResb, b.length);
+                        lastResb += b.length;
+                    }
+                    byte[] newSignature = new byte[lastResb];
+                    System.arraycopy(resb, 0, newSignature, 0, lastResb);
+                    signature = newSignature;
                 }
 
                 String certInfo = new StringBuilder().append(selected.getStoreName()).append(";").append(String.valueOf(signature.length)).append(";").append(selected.getIssuerDN().getName()).append(";").append(selected.getSubjectDN().getName()).append(";").append(DateFormat.getInstance().format(selected.getNotBefore())).append(";").append(DateFormat.getInstance().format(selected.getNotAfter())).append(";").append(selected.getUserFriendlyName()).append(";").append(String.valueOf(selected.canSign())).append(";").append(String.valueOf(selected.getVersion())).append(";").append(selected.getSerialNumber().toString()).append(";").toString();
 
-                handleOk("onSignOK", signature, certInfo);
+                handleOk("onSignOK", signature, certInfo, attachmentsInfo, verifyOutput);
 
                 FileLog.info("OpenSign finished!!!");
             }
@@ -336,27 +345,36 @@ public class SignActionListener
         return host;
     }
 
-    private void handleOk(String javaScriptFunction, byte[] signature, String certInfo)
+    private void handleOk(String javaScriptFunction, byte[] signature, String certInfo, String attachmentInfo, String verifyOutput)
     {
         try
         {
             String base64signature = new String(Base64.encode(signature), "UTF-8");
-            callBackHandler.setOutputData(base64signature);
+            this.callBackHandler.setOutputData(base64signature);
             reportDataSigned();
-            JavascriptRunner javascriptRunner = callBackHandler.getJavascriptRunner();
-            try {
-                int inx = 0;
-                int strlen = base64signature.length();
-                while (inx + 100000 <= strlen) {
-                    javascriptRunner.call("appendResult", new String[] { base64signature.substring(inx, inx + 100000) });
-                    inx += 100000;
+            JavascriptRunner javascriptRunner = this.callBackHandler.getJavascriptRunner();
+            int inx = 0;
+            int strlen = base64signature.length();
+            int step = 2097152;
+            try
+            {
+                while (inx + step < strlen)
+                {
+                    javascriptRunner.callFunction("onSignAppendResult", new String[] { base64signature.substring(inx, inx + step) });
+                    inx += step;
                 }
-                callBackHandler.getJavascriptRunner().call("appendResult", new String[] { base64signature.substring(inx, strlen) });
-                javascriptRunner.callFunction(javaScriptFunction, new String[] { certInfo });
-            } catch (Exception e) {
-                javascriptRunner.callFunction(javaScriptFunction, new String[] { base64signature, certInfo });
+                javascriptRunner.callFunction("onSignAppendResult", new String[] { base64signature.substring(inx, strlen) });
             }
-        } catch (UnsupportedEncodingException e) {
+            catch (Exception e)
+            {
+                FileLog.error(e.getMessage(), e);
+            }
+            FileLog.info("Velikost odeslanych dat je: " + Integer.toString(strlen));
+            FileLog.info("Attachment info delka: " + Integer.toString(attachmentInfo.length()));
+            javascriptRunner.callFunction(javaScriptFunction, new String[] { certInfo, attachmentInfo, verifyOutput });
+        }
+        catch (UnsupportedEncodingException e)
+        {
             FileLog.error(e.getMessage(), e);
         }
     }

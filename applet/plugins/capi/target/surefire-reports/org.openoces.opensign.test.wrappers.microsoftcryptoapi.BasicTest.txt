@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: org.openoces.opensign.client.applet.bootstrap.Sha1Checksum1Test
+Test set: org.openoces.opensign.test.wrappers.microsoftcryptoapi.BasicTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.009 sec
