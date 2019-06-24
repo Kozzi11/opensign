@@ -51,7 +51,7 @@ public class AttachmentImpl extends Observable
             } else if (name.equals("content")) {
                 String cont = child.getContent();
                 cont = cont.substring(cont.indexOf("base64,", 4) + 7);
-                content = Base64.decode(cont.getBytes());
+                this.content = cont.getBytes();
             } else if (name.equals("size")) {
                 size = Long.parseLong(child.getContent());
             } else if (name.equals("hashValue")) {
@@ -195,6 +195,8 @@ public class AttachmentImpl extends Observable
     {
         return content;
     }
+
+    public byte[] getEncodeContents() { return this.content; }
 
     public long getSize() {
         return size;

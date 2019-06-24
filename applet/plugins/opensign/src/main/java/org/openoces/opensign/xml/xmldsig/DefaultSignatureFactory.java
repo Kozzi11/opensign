@@ -53,9 +53,9 @@ public class DefaultSignatureFactory implements SignatureFactory {
                     }
 
                     sb.append(">");
-                    byte[] bs = attachment.getContents();
+                    byte[] bs = attachment.getEncodeContents();
                     if (bs != null) {
-                        sb.append(BasicSignatureGenerator.wrapLines(new String(Base64.encode(bs)), BasicSignatureGenerator.BASE64_LINELENGTH).toString());
+                        sb.append(BasicSignatureGenerator.wrapLines(new String(bs), BasicSignatureGenerator.BASE64_LINELENGTH).toString());
                     }
                     sb.append("</ds:Object>");
                     sbs[i].attachment = sb.toString();

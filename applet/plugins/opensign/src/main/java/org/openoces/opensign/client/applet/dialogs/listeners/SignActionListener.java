@@ -19,6 +19,7 @@ import java.security.PublicKey;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -80,6 +81,7 @@ public class SignActionListener
     }
 
     public void validPasswordEntered(char[] password) {
+        printMem("Part 3");
         try {
             CertificateHandler selected = certificateView.getSelectedCertificate();
             if (!selected.isInfoAvailable()) {
@@ -113,22 +115,23 @@ public class SignActionListener
                 visibleProps.put("logonto", hostName);
 
                 addEnvironmentProperties(p);
-
+                printMem("Part 4");
                 Attachment[] attachments = null;
                 String attachmentsInfo = "";
                 if (attachmentSupport != null)
                 {
-                    p.put("opensign_openoces_attachment_input", this.attachmentSupport.getAttachmentPart());
                     attachments = this.attachmentSupport.getAttachments();
                     FileLog.debug("Attachments size = " + attachments.length);
                     FileLog.info("Attachments size = " + attachments.length);
                     for (Attachment attachment : attachments) {
-                        attachmentsInfo = attachmentsInfo + attachment.getTitle() + ": " + Integer.toString(attachment.getContents().length) + "\n";
+                        attachmentsInfo = attachmentsInfo + attachment.getTitle() + ": " + Long.toString(attachment.getSize()) + "\n";
                     }
                 } else {
                     FileLog.info("No attachments!!!");
                     FileLog.debug("No attachments!!!!");
                 }
+
+                printMem("Part 5");
 
                 String serialNumber = selected.getSerialNumber().toString();
                 String issuerDN = selected.getIssuerDN().getName();
@@ -140,6 +143,7 @@ public class SignActionListener
                 String verifyOutput = "";
                 StringBuilder verifySB = new StringBuilder();
                 boolean certIsOk = false;
+                printMem("Part 6");
 
                 if (issuerDN.contains("PostSignum Qualified CA")) {
                     String postData = new StringBuilder().append("idb_hf_0=&qca=on&submitSerioveCislo=ODESLAT&certEmail=&certSerioveCislo=").append(serialNumber).toString();
@@ -193,13 +197,13 @@ public class SignActionListener
                 else {
                     throw new MyException("Nepodporovana CA", "103");
                 }
-                if (!certIsOk)
-                    verifyOutput = verifySB.toString();
+
+                printMem("Part 7");
 
                 SignatureGenerator sigGen = paramReader.createSignatureGenerator();
                 FileLog.debug(new StringBuilder().append("Using signature generator: ").append(sigGen.getClass().getName()).toString());
                 byte[] signature = sigGen.sign(selected, certificateView.getSignText(), visibleProps, p, attachments, callBackHandler.getSignatureAlgorithmFactory(password)).getBytes();
-
+                printMem("Part 8");
                 if (encrypt)
                 {
                     Cipher rsa = Cipher.getInstance("RSA/ECB/PKCS1Padding");
@@ -239,6 +243,7 @@ public class SignActionListener
                     signature = newSignature;
                 }
 
+                printMem("Part 9");
                 String certInfo = new StringBuilder().append(selected.getStoreName()).append(";").append(String.valueOf(signature.length)).append(";").append(selected.getIssuerDN().getName()).append(";").append(selected.getSubjectDN().getName()).append(";").append(DateFormat.getInstance().format(selected.getNotBefore())).append(";").append(DateFormat.getInstance().format(selected.getNotAfter())).append(";").append(selected.getUserFriendlyName()).append(";").append(String.valueOf(selected.canSign())).append(";").append(String.valueOf(selected.getVersion())).append(";").append(selected.getSerialNumber().toString()).append(";").toString();
 
                 handleOk("onSignOK", signature, certInfo, attachmentsInfo, verifyOutput);
@@ -265,6 +270,24 @@ public class SignActionListener
             progressUI.hide((JApplet)callBackHandler);
             GuiUtil.requestFocus(actionButton);
         }
+    }
+
+    public static void printMem(String msg) {
+        Runtime runtime = Runtime.getRuntime();
+
+        NumberFormat format = NumberFormat.getInstance();
+
+        StringBuilder sb = new StringBuilder();
+        long maxMemory = runtime.maxMemory();
+        long allocatedMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+
+        sb.append(msg);
+        sb.append("free memory: " + format.format(freeMemory / 1024L) + "\n");
+        sb.append("allocated memory: " + format.format(allocatedMemory / 1024L) + "\n");
+        sb.append("max memory: " + format.format(maxMemory / 1024L) + "\n");
+        sb.append("total free memory: " + format.format((freeMemory + maxMemory - allocatedMemory) / 1024L) + "\n");
+        FileLog.error(sb.toString());
     }
 
     private void addStylesheet(Properties props, String b64Stylesheet, String stylesheetIdentifier)

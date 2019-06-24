@@ -8,8 +8,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openoces.opensign.appletsupport.Attachment;
 import org.openoces.opensign.client.applet.attach.Checksum;
+import org.openoces.opensign.client.applet.attach.InvalidContentException;
 import org.openoces.opensign.client.applet.attach.Sha1Checksum;
 import org.openoces.opensign.utils.Base64;
+
 
 @Ignore
 public class TestAttachmentImpl implements Attachment{
@@ -62,6 +64,11 @@ public class TestAttachmentImpl implements Attachment{
 	}
 
 	@Override
+	public long getSize() {
+		return 0;
+	}
+
+	@Override
 	public String getMimeType() {
 		return mimetype;
 	}
@@ -75,7 +82,12 @@ public class TestAttachmentImpl implements Attachment{
 		return content;
 	}
 
-    @Override
+	@Override
+	public byte[] getEncodeContents() throws InvalidContentException {
+		return Base64.encode(content);
+	}
+
+	@Override
     public String getPath() {
         return null;
     }

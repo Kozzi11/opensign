@@ -18,7 +18,6 @@ public class AttachmentSupportImpl
     public void init(CallBackHandler view, String attachmentParam, String homeDir, JComponent oldFocusComponent)
     {
         this.view = view;
-        this.attachmentParam = attachmentParam;
         attachmentListView = new AttachmentListViewDialog(view, oldFocusComponent);
         attachmentServer = new AttachmentServer(attachmentListView, attachmentParam, homeDir);
         registerViewers();

@@ -34,11 +34,9 @@ class AttachmentServer
         {
             parent = dialog;
             this.homeDir = homeDir;
-            byte[] ba = Base64.decode(attachmentParam.getBytes());
-            String attachmentXml = new String(ba, "UTF8");
 
             NanoXMLParser parser = new NanoXMLParser(true);
-            NanoXMLReader reader = NanoXMLReader.stringReader(attachmentXml);
+            NanoXMLReader reader = NanoXMLReader.stringReader(attachmentParam);
             parser.setReader(reader);
             XMLElement doc = parser.parse();
 
@@ -51,9 +49,6 @@ class AttachmentServer
             }
         } catch (XMLException e) {
             FileLog.error("Could not parse attachment xml", e);
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            FileLog.fatal(e.toString());
             throw new RuntimeException(e);
         }
     }

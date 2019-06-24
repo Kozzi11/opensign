@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -13,7 +13,7 @@
     <orderEntry type="module-library">
       <library name="Maven: java:java-plugin:jre-1.6.0">
         <CLASSES>
-          <root url="jar:///usr/lib/jvm/java-8-jdk/jre/lib/plugin.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/java/java-plugin/jre-1.6.0/java-plugin-jre-1.6.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -68,9 +68,12 @@ public interface Attachment {
      */
     boolean isOptional();
 
+    long getSize();
+
     String getMimeType();
 
     byte[] getContents() throws InvalidContentException;
+    byte[] getEncodeContents() throws InvalidContentException;
 
     String getPath();
 
