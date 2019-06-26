@@ -10,6 +10,10 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
@@ -146,10 +150,27 @@ public class SignActionListener
                 printMem("Part 6");
 
                 if (issuerDN.contains("PostSignum Qualified CA")) {
+                    TrustManager[] trustAllCerts = new TrustManager[]{
+                            new X509TrustManager() {
+                                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                                    return null;
+                                }
+                                public void checkClientTrusted(
+                                        java.security.cert.X509Certificate[] certs, String authType) {
+                                }
+                                public void checkServerTrusted(
+                                        java.security.cert.X509Certificate[] certs, String authType) {
+                                }
+                            }
+                    };
+
+                    SSLContext sc = SSLContext.getInstance("SSL");
+                    sc.init(null, trustAllCerts, new java.security.SecureRandom());
                     String postData = new StringBuilder().append("idb_hf_0=&qca=on&submitSerioveCislo=ODESLAT&certEmail=&certSerioveCislo=").append(serialNumber).toString();
                     URL url = new URL("http://www.postsignum.cz/certifikaty_uzivatelu.html");
 
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                    HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
+                    connection.setSSLSocketFactory(sc.getSocketFactory());
                     connection.setDoOutput(true);
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -181,7 +202,7 @@ public class SignActionListener
                 } else if (issuerDN.contains("I.CA")) {
                     DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("cs", "CZ"));
                     URL url = new URL("http://q.ica.cz/cgi-bin/crt_qpub.cgi?page=Cert&action=search&fromSn=" + serialNumber + "&fromNotBefore=" + df.format(selected.getNotBefore()) + "&fromNotAfter=" + df.format(selected.getNotAfter()) + "&cn=&email=&organization=&search=Hledat");
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                    HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
                     //connection.setDoOutput(true);
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String line;

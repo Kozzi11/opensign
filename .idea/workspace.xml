@@ -114,7 +114,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentSupportImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="398">
+            <state relative-caret-position="435">
               <caret line="37" column="38" selection-start-line="37" selection-start-column="38" selection-end-line="37" selection-end-column="38" />
               <folding>
                 <element signature="e#1394#1395#0" expanded="true" />
@@ -127,8 +127,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/XmldsigTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="173" column="65" lean-forward="true" selection-start-line="173" selection-start-column="65" selection-end-line="173" selection-end-column="65" />
+            <state relative-caret-position="2115">
+              <caret line="173" column="65" selection-start-line="173" selection-start-column="65" selection-end-line="173" selection-end-column="65" />
             </state>
           </provider>
         </entry>
@@ -136,23 +136,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/DefaultSignatureFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="47" column="21" lean-forward="true" selection-start-line="47" selection-start-column="21" selection-end-line="47" selection-end-column="21" />
+            <state relative-caret-position="705">
+              <caret line="47" column="21" selection-start-line="47" selection-start-column="21" selection-end-line="47" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="270">
-                <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-              </first_editor>
-              <second_editor />
             </state>
           </provider>
         </entry>
@@ -161,7 +149,7 @@
         <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/SignatureFactory.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
-              <caret line="14" column="90" lean-forward="true" selection-start-line="14" selection-start-column="90" selection-end-line="14" selection-end-column="90" />
+              <caret line="14" column="90" selection-start-line="14" selection-start-column="90" selection-end-line="14" selection-end-column="90" />
             </state>
           </provider>
         </entry>
@@ -179,13 +167,15 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/client/applet/dialogs/listeners/SignActionListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="427">
-              <caret line="122" column="65" selection-start-line="122" selection-start-column="65" selection-end-line="122" selection-end-column="65" />
+            <state relative-caret-position="330">
+              <caret line="172" column="74" selection-start-line="172" selection-start-column="74" selection-end-line="172" selection-end-column="74" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#7906#7907#0" expanded="true" />
+                <element signature="e#7989#7990#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -194,7 +184,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="878">
+            <state relative-caret-position="2550">
               <caret line="198" column="35" selection-start-line="198" selection-start-column="18" selection-end-line="198" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -207,7 +197,7 @@
         <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/appletsupport/Attachment.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="690">
-              <caret line="76" lean-forward="true" selection-start-line="76" selection-end-line="76" />
+              <caret line="76" selection-start-line="76" selection-end-line="76" />
             </state>
           </provider>
         </entry>
@@ -215,7 +205,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/TestAttachmentImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
+            <state relative-caret-position="975">
               <caret line="85" column="35" selection-start-line="85" selection-start-column="18" selection-end-line="85" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -259,7 +249,6 @@
       <list>
         <option value="$PROJECT_DIR$/applet/bootstrap/pom.xml" />
         <option value="$PROJECT_DIR$/opensign.crt" />
-        <option value="$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/client/applet/dialogs/listeners/SignActionListener.java" />
         <option value="$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentServer.java" />
         <option value="$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/client/applet/dialogs/DefaultAttachmentSupportFactory.java" />
         <option value="$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentImpl.java" />
@@ -269,6 +258,7 @@
         <option value="$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/DefaultSignatureFactory.java" />
         <option value="$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/TestAttachmentImpl.java" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/client/applet/dialogs/listeners/SignActionListener.java" />
       </list>
     </option>
   </component>
@@ -281,10 +271,11 @@
     </option>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds" extendedState="4">
-    <option name="y" value="27" />
-    <option name="width" value="2544" />
-    <option name="height" value="1413" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="458" />
+    <option name="y" value="242" />
+    <option name="width" value="1920" />
+    <option name="height" value="1117" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -307,6 +298,113 @@
             <path>
               <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
               <item name="opensign" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="appletsupport" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="dialogs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensign" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="plugins" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="opensign" type="462c0819:PsiDirectoryNode" />
+              <item name="applet" type="462c0819:PsiDirectoryNode" />
+              <item name="dialogs" type="462c0819:PsiDirectoryNode" />
+              <item name="listeners" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -538,28 +636,27 @@
       <workItem from="1415050238552" duration="1590000" />
       <workItem from="1415289628281" duration="34000" />
       <workItem from="1415289674294" duration="4502000" />
-      <workItem from="1561118294849" duration="11713000" />
+      <workItem from="1561118294849" duration="12599000" />
+      <workItem from="1561530241572" duration="329000" />
+      <workItem from="1561530857966" duration="816000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39557000" />
+    <option name="totallyTimeSpent" value="41588000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="27" width="2544" height="1413" extended-state="4" />
+    <frame x="0" y="27" width="2560" height="1413" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Capture Tool" />
-      <window_info id="Image Layers" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703663" weight="0.5495935" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703663" visible="true" weight="0.22629482" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="Web" order="3" side_tool="true" />
       <window_info id="Palette&#9;" order="4" />
       <window_info id="UI Designer" order="5" />
-      <window_info anchor="bottom" id="Spring" />
-      <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info id="Image Layers" order="6" />
+      <window_info id="Capture Tool" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.13422292" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -574,10 +671,10 @@
       <window_info anchor="bottom" id="IDEtalk Messages" order="11" />
       <window_info anchor="bottom" id="Java Enterprise" order="12" />
       <window_info anchor="bottom" id="Version Control" order="13" weight="0.32905984" />
-      <window_info anchor="bottom" id="Terminal" order="14" weight="0.32967034" />
-      <window_info anchor="right" id="Maven" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Theme Preview" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="14" visible="true" weight="0.24489796" />
+      <window_info anchor="bottom" id="Spring" order="15" />
+      <window_info anchor="bottom" id="Docker" order="16" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="17" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.2496329" />
@@ -587,47 +684,10 @@
       <window_info anchor="right" id="Maven Projects" order="6" />
       <window_info anchor="right" id="IDEtalk" order="7" />
       <window_info anchor="right" id="Database" order="8" />
+      <window_info anchor="right" id="Maven" order="9" />
+      <window_info anchor="right" id="Capture Analysis" order="10" />
+      <window_info anchor="right" id="Theme Preview" order="11" />
     </layout>
-    <layout-to-restore>
-      <window_info id="Capture Tool" order="0" />
-      <window_info id="Image Layers" order="1" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" sideWeight="0.6703663" visible="true" weight="0.5495935" />
-      <window_info id="Structure" order="3" weight="0.25" />
-      <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info id="Web" order="5" side_tool="true" />
-      <window_info id="Palette&#9;" order="6" />
-      <window_info id="UI Designer" order="7" />
-      <window_info anchor="bottom" id="Spring" order="0" />
-      <window_info anchor="bottom" id="Docker" order="1" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" order="2" />
-      <window_info anchor="bottom" id="Message" order="3" />
-      <window_info anchor="bottom" id="Find" order="4" visible="true" weight="0.13422292" />
-      <window_info anchor="bottom" id="Run" order="5" />
-      <window_info anchor="bottom" id="Debug" order="6" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="9" />
-      <window_info anchor="bottom" id="Application Servers" order="10" />
-      <window_info anchor="bottom" id="CVS" order="11" />
-      <window_info anchor="bottom" id="Changes" order="12" />
-      <window_info anchor="bottom" id="Event Log" order="13" side_tool="true" />
-      <window_info anchor="bottom" id="IDEtalk Messages" order="14" />
-      <window_info anchor="bottom" id="Java Enterprise" order="15" />
-      <window_info anchor="bottom" id="Version Control" order="16" weight="0.32905984" />
-      <window_info anchor="bottom" id="Terminal" order="17" weight="0.32967034" />
-      <window_info anchor="right" id="Maven" order="0" />
-      <window_info anchor="right" id="Capture Analysis" order="1" />
-      <window_info anchor="right" id="Theme Preview" order="2" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="3" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="5" weight="0.2496329" />
-      <window_info anchor="right" id="Designer" order="6" />
-      <window_info anchor="right" id="Palette" order="7" />
-      <window_info anchor="right" id="JetGradle" order="8" />
-      <window_info anchor="right" id="Maven Projects" order="9" />
-      <window_info anchor="right" id="IDEtalk" order="10" />
-      <window_info anchor="right" id="Database" order="11" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -903,26 +963,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/client/applet/dialogs/listeners/SignActionListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="122" column="65" selection-start-line="122" selection-start-column="65" selection-end-line="122" selection-end-column="65" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/XmldsigTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="173" column="65" lean-forward="true" selection-start-line="173" selection-start-column="65" selection-end-line="173" selection-end-column="65" />
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="270">
+            <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentSupportImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398">
+        <state relative-caret-position="435">
           <caret line="37" column="38" selection-start-line="37" selection-start-column="38" selection-end-line="37" selection-end-column="38" />
           <folding>
             <element signature="e#1394#1395#0" expanded="true" />
@@ -931,13 +984,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentImpl.java">
+    <entry file="file://$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/XmldsigTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="878">
-          <caret line="198" column="35" selection-start-line="198" selection-start-column="18" selection-end-line="198" selection-end-column="35" />
+        <state relative-caret-position="2115">
+          <caret line="173" column="65" selection-start-line="173" selection-start-column="65" selection-end-line="173" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/DefaultSignatureFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="47" column="21" selection-start-line="47" selection-start-column="21" selection-end-line="47" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/SignatureFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="14" column="90" selection-start-line="14" selection-start-column="90" selection-end-line="14" selection-end-column="90" />
         </state>
       </provider>
     </entry>
@@ -952,10 +1019,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/TestAttachmentImpl.java">
+    <entry file="file://$PROJECT_DIR$/applet/plugins/attachment/src/main/java/org/openoces/opensign/client/applet/attach/AttachmentImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="85" column="35" selection-start-line="85" selection-start-column="18" selection-end-line="85" selection-end-column="35" />
+        <state relative-caret-position="2550">
+          <caret line="198" column="35" selection-start-line="198" selection-start-column="18" selection-end-line="198" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -965,34 +1032,29 @@
     <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/appletsupport/Attachment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="690">
-          <caret line="76" lean-forward="true" selection-start-line="76" selection-end-line="76" />
+          <caret line="76" selection-start-line="76" selection-end-line="76" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/SignatureFactory.java">
+    <entry file="file://$PROJECT_DIR$/applet/plugins/pkcs12/src/test/java/org/openoces/opensign/test/xml/xmldsig/TestAttachmentImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="14" column="90" lean-forward="true" selection-start-line="14" selection-start-column="90" selection-end-line="14" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/xml/xmldsig/DefaultSignatureFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="47" column="21" lean-forward="true" selection-start-line="47" selection-start-column="21" selection-end-line="47" selection-end-column="21" />
+        <state relative-caret-position="975">
+          <caret line="85" column="35" selection-start-line="85" selection-start-column="18" selection-end-line="85" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="270">
-            <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/applet/plugins/opensign/src/main/java/org/openoces/opensign/client/applet/dialogs/listeners/SignActionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="172" column="74" selection-start-line="172" selection-start-column="74" selection-end-line="172" selection-end-column="74" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7906#7907#0" expanded="true" />
+            <element signature="e#7989#7990#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
